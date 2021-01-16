@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'nomadic'
+
+require 'pry'
+
+Nomadic::Nomad.new(Redis::Value.new("NODE").value)
+Pry.start

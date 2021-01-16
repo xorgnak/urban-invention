@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+which overcommit > /dev/null 2>&1 && overcommit --install
+bundle install
+
+apt update
+apt upgrade -y
+apt install -y nmap
+
+redis-cli set NODE `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
+redis-cli set ID `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
+redis-cli set TOKEN `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 128 | head -n 1`

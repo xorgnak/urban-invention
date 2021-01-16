@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'sinatra/base'
+require 'redis-objects'
+require 'json'
+require 'mqtt'
+require 'cinch'
+require 'pry'
+
+require 'nomadic'
+
+Nomadic.begin
+
+Pry.start
+
