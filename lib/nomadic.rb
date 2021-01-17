@@ -1,8 +1,3 @@
-require 'redis-objects'
-require 'json'
-require 'paho-mqtt'
-require 'cinch'
-
 module Nomadic
 
   autoload :VERSION, "nomadic/version"
