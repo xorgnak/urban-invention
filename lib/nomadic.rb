@@ -93,7 +93,7 @@ module Nomadic
   
   @mqtt = PahoMqtt::Client.new()
   @mqtt.on_message do |m|
-    puts "MQTT #{m.topic} #{m.payload}"
+    Redis.new.publish "mqtt.#{m.topic}", m.payload
   end
   @mqtt.connect('vango.me', 1883)
   @mqtt.subscribe(['#', 1])
