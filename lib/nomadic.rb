@@ -130,6 +130,7 @@ module Nomadic
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
@@ -152,38 +153,85 @@ module Nomadic
       <div id='output'>#{WELCOME}</div>
     </fieldset>
   </form>
-  <script>
-    var id = "<%= params[:id] || rand_id %>";
-    function getForm() {
-      var ia = {};
-    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; });
-    return ia; }
-    $(function() {
-      $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
-      $(document).on('click', ".task", function(ev) { 
-        ev.preventDefault(); 
-        $("#cmd").val("[X] " + $(this).val()); 
-      });
-      $(document).on('click', '.goto', function(ev) { 
-        ev.preventDefault(); 
-        jQuery.post(
-          '/', 
-          { goto: $(this).val(), id: id, cmd: $('#cmd').val(), form: getForm() }
-        ); 
-      });
-      $(document).on('click', "#exe", function(ev) { 
-        ev.preventDefault(); 
-        jQuery.post(
-          '/', 
-          { id: id, cmd: $("#cmd").val(), form: getForm() }, 
-          function(d) { 
-            console.log("post", d); 
-            if ( d.output ) { 
-              $("#output").html(d.output); 
-              $("#input").html(d.cmd); 
-            } 
-          }); 
-          $("#cmd").val(""); 
+	    <script>
+	    // get unique id OR use one passed in.
+	    var id = "<%= params[:id] || rand_id %>";
+	// turn form into json object.
+	function getForm() {
+	    var ia = {};
+	    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
+	}
+	// sends a message over mqtt
+	function sendMqtt(topic, payload) {
+	    message = new Paho.MQTT.Message(payload);
+	    message.destinationName = topic;
+	    client.send(message);
+	}
+	// called when the client connects
+	function onConnect() {
+	    // Once a connection has been made, make a subscription and send a message.
+	    console.log("onConnect");
+	    client.subscribe("time");
+	    client.subscribe(id);
+	    sendMqtt('hive', id);
+	}
+	// called when the client loses its connection
+	function onConnectionLost(responseObject) {
+	    if (responseObject.errorCode !== 0) {
+		console.log("onConnectionLost:", responseObject);
+	    }
+	}
+
+	// called when a message arrives
+	function onMessageArrived(message) {
+	    console.log("onMessageArrived:", message);
+	}
+	$(function() {
+	    // create the mqtt client.
+            client = new Paho.MQTT.Client('vango.me', Number(8083), id);
+	    
+	    // set callback handlers
+	    client.onConnectionLost = onConnectionLost;
+	    client.onMessageArrived = onMessageArrived;
+	    
+	    // connect the client
+	    client.connect({onSuccess:onConnect});
+	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
+	    $(document).on('click', ".task", function(ev) { 
+		ev.preventDefault(); 
+		$("#cmd").val("[X] " + $(this).val()); 
+	    });
+	    $(document).on('click', '.goto', function(ev) { 
+		ev.preventDefault(); 
+		jQuery.post(
+		    '/', 
+		    { goto: $(this).val(), id: id, cmd: $('#cmd').val(), form: getForm() }
+		);
+		
+	    });
+	    $(document).on('click', "#exe", function(ev) { 
+		ev.preventDefault();
+		var cmd = $("#cmd").val();
+		var d = { id: id, cmd: $("#cmd").val(), form: getForm() };
+		if (cmd.match(/^[@#\/]\w+/g)) {
+		    // get topic from cmd
+		    var pla = cmd.split(" ");
+		    d.topic = pla.shift();
+		    d.payload = pla.join(" ");
+		    sendMqtt(id, JSON.generate(d));
+		    $("#cmd").val("");
+		} else {
+		    // send d to server, display results, clear input.
+		    jQuery.post(
+			'/', d, function(d) { 
+			    console.log("post", d);
+			    if ( d.output ) { 
+				$("#output").html(d.output); 
+				$("#input").html(d.cmd); 
+			    }
+			}); 
+		    $("#cmd").val("");
+		}
       });
     });
   </script>
