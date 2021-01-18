@@ -121,7 +121,7 @@ module Nomadic
 <DOCTYPE html>
   <head>
     <style>
-      #i > *  { vertical-align: middle; font-size: larger; height: 8%; }
+      #i > *  { vertical-align: middle; font-size: large; height: 8%; }
       .l { left: 0; }
       .r { right: 0; }
       code { border: thin solid black;  padding: 0 1% 0 1%; }
