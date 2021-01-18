@@ -144,7 +144,7 @@ module Nomadic
   <form style='width: 100vw; height: 100vh; margin: 0;'>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='pic' type='button' class='material-icons' style=''>camera</button> 
-      <input id='cmd' list="cmds" style='width: 50%; border: thin solid black;'>
+      <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
       <button id='exe' type='button' class='material-icons' style=''>send</button>
     </p>
     <fieldset style='height: 85%; overflow: auto;'>
