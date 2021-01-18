@@ -121,7 +121,7 @@ module Nomadic
 <DOCTYPE html>
   <head>
     <style>
-      #i > *  { vertical-align: middle; font-size: large; height: 8%; }
+      #i > *  { vertical-align: middle; font-size: large; }
       .l { left: 0; }
       .r { right: 0; }
       code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -147,7 +147,7 @@ module Nomadic
       <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
       <button id='exe' type='button' class='material-icons' style=''>send</button>
     </p>
-    <fieldset style='height: 85%; overflow: auto;'>
+    <fieldset style='max-height: 85%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
