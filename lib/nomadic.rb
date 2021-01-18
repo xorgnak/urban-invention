@@ -195,7 +195,7 @@ module Nomadic
 	    client.onMessageArrived = onMessageArrived;
 	    
 	    // connect the client
-	    client.connect({useSSL: true, userName: "testuser", password: "testpass", onSuccess:onConnect});
+	    client.connect({userName: "testuser", password: "testpass", onSuccess:onConnect});
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
