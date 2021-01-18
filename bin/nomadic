@@ -3,7 +3,7 @@
 require 'sinatra/base'
 require 'redis-objects'
 require 'json'
-require 'mqtt'
+require 'paho-mqtt'
 require 'cinch'
 require 'pry'
 
