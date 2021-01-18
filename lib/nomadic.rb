@@ -147,7 +147,7 @@ module Nomadic
       <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
       <button id='exe' type='button' class='material-icons' style=''>send</button>
     </p>
-    <fieldset style='max-height: 85%; overflow: auto;'>
+    <fieldset style='height: 90%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
