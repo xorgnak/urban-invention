@@ -211,7 +211,7 @@ module Nomadic
         return JSON.generate(e)
     }
     not_found do
-      Redis.new.publish "404", JSON.generate({ method: request.request_method, uri: request:fullpath, params: params })
+      Redis.new.publish "404", JSON.generate({ method: request.request_method, uri: request.fullpath, params: params })
     end
   end
   def self.begin
