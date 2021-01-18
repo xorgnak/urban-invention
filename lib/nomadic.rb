@@ -210,6 +210,9 @@ module Nomadic
         e = @vm[params[:id]] << params[:cmd]
         return JSON.generate(e)
     }
+    not_found do
+      Redis.new.publish "404", JSON.generate({ method: request.request_method, uri: request:fullpath, params: params })
+    end
   end
   def self.begin
     @bot = Cinch::Bot.new do
