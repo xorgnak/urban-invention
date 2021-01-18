@@ -7,15 +7,31 @@ module Nomadic
 
   autoload :VERSION, "nomadic/version"
 
-  WELCOME = [%[<h3>Welcome!</h3>],
+  NOMADIC = [ %[<div style='text-align: center;'>], 
+              %[<p>a simple set of tools to work together and get things done.</p>],
+              %[<h1 class='material-icons'>],
+              %[<span style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 300%;'>directions_walk</span>],
+              %[</h1>],
+              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
+              %[</div>]
+            ].join('');
+  
+  WELCOME = [%[<div style='text-align: center;'>],
+    %[<h3>Welcome!</h3>],
              %[<h2>type your phone number above to begin</h2>],
              %[<h4>simple.</h4>],
              %[<h4>flexible.</h4>],
-             %[<h4>tools.</h4>]].join('')
+             %[<h4>tools.</h4>],
+            %[</div>]].join('')
   
-  HELP = [%[<h2>Remain Calm.</h2>],
-          %[<p>here's how you do some stuff!</p>],
-          %[<h3>tools</h3><ul><li><span>settings</span><span>Show your session settings.</span></li><li><span>id</span><span>Show your id.</span></li><li><span>tasks</span><span>Show your remaining tasks.</span></li><li><span>logs</span><span>Show your session history.</span></li></ul>]].join('')
+  HELP = [%[<h2 style='text-align: center;'>Remain Calm.</h2>],
+          %[<p>type the <code>command</code> below to run the <span class='action'>action</span>.</p>],
+          %[<ul>],
+          %[<li><code>settings</code><span class='action'>Show your session settings.</span></li>],
+          %[<li><code>id</code><span class='action'>Show your id.</span></li>],
+          %[<li><code>tasks</code><span class='action'>Show your remaining tasks.</span></li>],
+          %[<li><code>logs</code><span class='action'>Show your session history.</span></li>],
+          %[</ul>]].join('')
 
   SETTINGS = [%[settings...]].join('')
   
@@ -25,16 +41,18 @@ module Nomadic
     sorted_set :stat
     list :task
     list :note
-    list :logs
+    list :log
     def initialize u
       @id = u
       @db = {}
     end
     def id; @id; end
+    def welcome; WELCOME; end
+    def nomadic; NOMADIC; end
     def help; HELP; end
     def settings; SETTINGS; end
     def logs
-      self.logs.map { |e| %[<p>#{e}</p>] }.join('')
+      self.log.map { |e| %[<p>#{e}</p>] }.join('')
     end
     def tasks
       if self.task.length > 0
@@ -51,13 +69,13 @@ module Nomadic
         t = 'tasks'
         if m[1] != nil && m[1] != ''
           self.task << m[1]
-          self.logs << "created task: #{m[1]} at #{Time.now.utc.to_s}"
+          self.log << "created task: #{m[1]} at #{Time.now.utc.to_s}"
         end
         o = tasks
       elsif m = /^\[X\]\s(.*)/.match(i)
         t = "tasks"
         self.task.delete(m[1])
-        self.logs << "finished task: #{m[1]} at #{Time.now.utc.to_s}"
+        self.log << "finished task: #{m[1]} at #{Time.now.utc.to_s}"
         o = tasks
       else
         t = i
@@ -67,7 +85,7 @@ module Nomadic
         rescue => re
           o = re
         end
-        self.logs << "cmd: #{i} at #{Time.now.utc.to_s}<br>#{o}"
+        self.log << "cmd: #{i} at #{Time.now.utc.to_s}"
       end
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
@@ -101,33 +119,76 @@ module Nomadic
   )
   
   class App < Sinatra::Base
-    INDEX = [
-      %[<!DOCTYPE html><head>],
-      %[<style>],
-      %[form { width: 100%; }],
-      %[#i > *  { vertical-align: middle; }],
-      %[.l { left: 0; }],
-      %[.r { right: 0; }],
-      %[</style>],
-      %[<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>],
-      %[<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">],
-      %[</head><body style='height: 100%; width: 100%; margin: 0; padding: 0;'>],
-      %[<datalist id='cmds'><option value='help'><option value='task '><option value='note '></datalist>],
-      %[<form><h1 id='i' style='width: 100%; text-align: center; margin: 0;'><input id='cmd' list="cmds" style='width: 75%;'><button id='exe' type='button' class='material-icons'>send</button></h1>],
-      %[<fieldset style='height: 100%;'><legend id='input'>nomadic</legend><div id='output'>This is the nomadic user interface.</div></fieldset>],
-      %[</form><script>],
-      %[var id = "<%= params[:id] || rand_id %>";],
-      %[function getForm() {],
-      %[var ia = {};],
-      %[$.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; });],
-      %[return ia; }],
-      %[$(function() {],
-      %[$(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });],
-      %[$(document).on('click', ".task", function(ev) { ev.preventDefault(); $("#cmd").val("[X] " + $(this).val()); });],
-      %[$(document).on('click', "#exe", function(ev) { ev.preventDefault(); jQuery.post('/', { id: id, cmd: $("#cmd").val(), form: getForm() }, function(d) { console.log("post", d); if ( d.output ) { $("#output").html(d.output); $("#input").html(d.cmd);} }); $("#cmd").val(""); });],
-      %[});],
-      %[</script>]
-    ];
+    HTML = %[
+<DOCTYPE html>
+  <head>
+    <style>
+      #i > *  { vertical-align: middle; font-size: larger; }
+      .l { left: 0; }
+      .r { right: 0; }
+      code { border: thin solid black;  padding: 0 1% 0 1%; }
+      .action { border: thin dotted red; border-radius: 10px; }
+    </style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
+  <datalist id='cmds'>
+    <option value='[ ] '>
+    <option value='tasks'>
+    <option value='logs'>
+    <option value='sessions'>
+    <option value='id'>
+    <option value='help'>
+  </datalist>
+  <form style='width: 100vw; height: 100vh; margin: 0;'>
+    <h1 id='i' style='width: 100%; height: 10%; text-align: center; margin: 0;'>
+      <input id='cmd' list="cmds" style='width: 75%; border: thin solid black;'>
+      <button id='exe' type='button' class='material-icons'>send</button>
+    </h1>
+    <fieldset style='height: 85%; overflow: auto;'>
+      <legend id='input'>welcome</legend>
+      <div id='output'>#{WELCOME}</div>
+    </fieldset>
+  </form>
+  <script>
+    var id = "<%= params[:id] || rand_id %>";
+    function getForm() {
+      var ia = {};
+    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; });
+    return ia; }
+    $(function() {
+      $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
+      $(document).on('click', ".task", function(ev) { 
+        ev.preventDefault(); 
+        $("#cmd").val("[X] " + $(this).val()); 
+      });
+      $(document).on('click', '.goto', function(ev) { 
+        ev.preventDefault(); 
+        jQuery.post(
+          '/', 
+          { goto: $(this).val(), id: id, cmd: $('#cmd').val(), form: getForm() }
+        ); 
+      });
+      $(document).on('click', "#exe", function(ev) { 
+        ev.preventDefault(); 
+        jQuery.post(
+          '/', 
+          { id: id, cmd: $("#cmd").val(), form: getForm() }, 
+          function(d) { 
+            console.log("post", d); 
+            if ( d.output ) { 
+              $("#output").html(d.output); 
+              $("#input").html(d.cmd); 
+            } 
+          }); 
+          $("#cmd").val(""); 
+      });
+    });
+  </script>
+</body>
+</html>
+        ]
     def initialize()
       super()
       @vm = Hash.new { |h,k| h[k] = K.new(k) }
@@ -145,12 +206,12 @@ module Nomadic
       puts "#{request.request_method} #{request.fullpath} #{params}"
     end
     get('/') {
-      ERB.new(INDEX.join('')).result(binding)
+      ERB.new(HTML).result(binding)
     }
     post('/') {
-      content_type 'application/json';
-      e = @vm[params[:id]] << params[:cmd]
-      return JSON.generate(e)
+        content_type 'application/json';
+        e = @vm[params[:id]] << params[:cmd]
+        return JSON.generate(e)
     }
   end
   def self.begin
@@ -158,7 +219,7 @@ module Nomadic
       configure do |c|
         c.nick = @id
         c.server = "vango.me"
-        c.verbose = true
+#        c.verbose = true
         c.channels = ['#hive', "##{@id}" ]
       end
       on(:catchall) {|m| puts "IRC #{m}" }
@@ -166,7 +227,7 @@ module Nomadic
         Channel(h[:ch]).send(h[:msg])
       end
     end
-    Process.detach( fork { @bot.start } )
+#    Process.detach( fork { @bot.start } )
     Process.detach( fork { App.run! } )
   end
   def bot h={}
