@@ -12,20 +12,23 @@ module Nomadic
             ].join('');
   
   WELCOME = [%[<div style='text-align: center;'>],
-    %[<h3>Welcome!</h3>],
              %[<h2>type your phone number above to begin</h2>],
-             %[<h4>simple.</h4>],
-             %[<h4>flexible.</h4>],
-             %[<h4>tools.</h4>],
+             %[<h4>simple. flexible. tools.</h4>],
+             %[<h1 class='material-icons'>],
+             %[<span style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 300%;'>directions_walk</span>],
+             %[</h1>],
             %[</div>]].join('')
   
   HELP = [%[<h2 style='text-align: center;'>Remain Calm.</h2>],
           %[<p>type the <code>command</code> below to run the <span class='action'>action</span>.</p>],
           %[<ul>],
+          %[<li><code>[ ] my new task.</code><span class='action'>Create a new task.</span></li>],
           %[<li><code>settings</code><span class='action'>Show your session settings.</span></li>],
-          %[<li><code>id</code><span class='action'>Show your id.</span></li>],
+          %[<li><code>id</code><span class='action'>Show your user id.</span></li>],
           %[<li><code>tasks</code><span class='action'>Show your remaining tasks.</span></li>],
           %[<li><code>logs</code><span class='action'>Show your session history.</span></li>],
+          %[<li><code>help</code><span class='action'>Show this help.</span></li>],
+          %[<li><code>2 + 2</code><span class='action'>Simple math using the +,-,*,/,**, and () operators.</span></li>],
           %[</ul>]].join('')
 
   SETTINGS = [%[settings...]].join('')
