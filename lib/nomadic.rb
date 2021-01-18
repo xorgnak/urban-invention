@@ -121,7 +121,7 @@ module Nomadic
 <DOCTYPE html>
   <head>
     <style>
-      #i > *  { vertical-align: middle; font-size: larger; }
+      #i > *  { vertical-align: middle; font-size: larger; height: 8%; }
       .l { left: 0; }
       .r { right: 0; }
       code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -144,7 +144,7 @@ module Nomadic
   <form style='width: 100vw; height: 100vh; margin: 0;'>
     <h1 id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='pic' type='button' class='material-icons' style=''>camera</button> 
-      <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
+      <input id='cmd' list="cmds" style='width: 50%; border: thin solid black;'>
       <button id='exe' type='button' class='material-icons' style=''>send</button>
     </h1>
     <fieldset style='height: 85%; overflow: auto;'>
