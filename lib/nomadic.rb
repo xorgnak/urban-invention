@@ -142,11 +142,11 @@ module Nomadic
     <option value='help'>
   </datalist>
   <form style='width: 100vw; height: 100vh; margin: 0;'>
-    <h1 id='i' style='width: 100%; text-align: center; margin: 0;'>
+    <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='pic' type='button' class='material-icons' style=''>camera</button> 
       <input id='cmd' list="cmds" style='width: 50%; border: thin solid black;'>
       <button id='exe' type='button' class='material-icons' style=''>send</button>
-    </h1>
+    </p>
     <fieldset style='height: 85%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
