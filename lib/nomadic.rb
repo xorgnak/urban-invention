@@ -15,7 +15,6 @@ module Nomadic
              %[<h4><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h4>],
              %[<nav>],
              %[<a href='https://vango.me/?id=<%= params[:id] %>' class='material-icons link'>save</a>],
-             %[<a href='https://vango.me/<%= params[:id] %>' class='material-icons link'>page</a>],
              %[<a href='https://vango.me/' class='material-icons link'>model_training</a>],
              %[</nav>],
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
@@ -264,8 +263,6 @@ module Nomadic
 	
 	
 	$(function() {
-            $("#id").prop('href', 'https://vango.me/' + id);
-            $("#id").text(id)	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
