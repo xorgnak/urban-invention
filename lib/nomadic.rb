@@ -40,6 +40,7 @@ module Nomadic
     sorted_set :stat
     list :task
     list :note
+    set :tags
     list :log
     def initialize u
       @id = u
@@ -110,6 +111,7 @@ module Nomadic
             self.stat.incr(m[3])
           end
         end
+        self.tags << t
         self.log << "##{m[4] || 'stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[m[3]]}\n> #{Time.now.utc.to_s}\n"
       else
         t = h[:form][:cmd]
