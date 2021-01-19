@@ -238,7 +238,7 @@ module Nomadic
 	
 	
 	$(function() {
-            setInterval(function() { sendForm('ping'); }, 10000);	    	
+            setInterval(function() { sendForm('wall'); }, 10000);	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
