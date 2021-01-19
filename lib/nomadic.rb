@@ -31,7 +31,7 @@ module Nomadic
           %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
           %[</ul>]].join('')
 
-  SETTINGS = [%[<textarea name='settings' style='width: 100%; height: 100%;'><%= @db %></textarea>]].join('')
+  SETTINGS = [%[<textarea name='settings' style='width: 100%; height: 100%;'><%= logs %></textarea>]].join('')
 
   class Metric
     include Redis::Objects
@@ -88,7 +88,7 @@ module Nomadic
       @prompt = p[0]
     end
     def run i
-      ERB.new("<%= #{i} %>").result(binding)
+      "<%= #{i} %>"
     end
     def << h
       db = {}
@@ -132,7 +132,7 @@ module Nomadic
             arr = ''
           end
           self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(:'#{h[:trigger]}'#{arr}); };])
-          o = @b.call
+          o = ERB.new(@b.call).result(binding)
         rescue => re
           o = re
         end
