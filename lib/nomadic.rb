@@ -161,10 +161,11 @@ return env;
 	    $.map($('#form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
-	    var dx = d;
+	    Object.assign(dx, d);
 	    dx.trigger = th;
 	    dx.form = getForm();
-            jQuery.post('/', dx, function(dd) { 
+            jQuery.post('/', dx, function(dd) {
+		d.time = dd.timestamp;
 		$("#input").html(dd.cmd); 
 		$("#output").html(dd.result.output);
 		if ( $("#cmd").val() == '' ) {
