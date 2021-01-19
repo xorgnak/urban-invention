@@ -114,7 +114,8 @@ module Nomadic
       if /^Nx\w{10}/.match(i[0])
         u = i.shift
         K.new(u).msg(from: @id, to: u, msg: i.join(' '))
-        logs
+        msg(from: @id, to: u, i.join(' '))
+        wall
       else
         ERB.new("<%= #{[i].flatten.join(' ')} %>").result(binding)
       end
