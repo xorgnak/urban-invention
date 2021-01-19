@@ -232,16 +232,17 @@ module Nomadic
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
-		$("#cmd").val("[X] " + $(this).val()); 
+		$("#b_c").val("[X] " + $(this).val());
+                $("#run").css('color', 'red'); 
 	    });
             $(document).on('keyup', '.form', function() {
                  var c = $(this).val();  
                  if (c.match(/ $/)) {
-                   $("#do").css('color', 'orange'); 
+                   $("#run").css('color', 'orange'); 
                  } else if (c != "") {
-                   $("#do").css('color', 'green'); 
+                   $("#run").css('color', 'green'); 
                  } else {
-                   $("#do").css('color', 'black');
+                   $("#run").css('color', 'black');
                  }
             });
 	    $(document).on('click', '.do', function(ev) { 
