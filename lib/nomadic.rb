@@ -56,6 +56,8 @@ module Nomadic
     end
     def save
       @db.each_pair {|k,v| self.attr[k] = v }
+      self.log << "# profile saved\n> #{Time.now.utc.to_s}"
+      logs
     end
     def html
       Kramdown::Document.new(self..md.value).to_html
