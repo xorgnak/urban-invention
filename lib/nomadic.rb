@@ -57,8 +57,8 @@ module Nomadic
       [t].flatten.each {|e| self.tag << e}
       m = self.tag.members
       m.delete('wallet')
-      mw = %[<span><button class='tag_up' value='$'>+</button>$#{self.stat['wallet']}))<button class='tag_dn' value='$'>-</button></span>]
-      mm = m.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
+      mw = %[<span class='tag'><button class='tag_up' value='$'>+</button>$#{self.stat['wallet']}))<button class='tag_dn' value='$'>-</button></span>]
+      mm = m.map {|e| %[<span class='tag'><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
       return [mw, mm].flatten.join('')
     end
     def tasks *t
@@ -152,7 +152,7 @@ module Nomadic
 		    .l { left: 0; }
 		    .r { right: 0; }
 		    code { border: thin solid black;  padding: 0 1% 0 1%; }
-		    .action { border: thin dotted red; border-radius: 10px; }
+		    .tag { border: thin solid black; }
 		  </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
