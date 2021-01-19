@@ -191,7 +191,7 @@ module Nomadic
 		ev.preventDefault(); 
 		$("#cmd").val("[X] " + $(this).val()); 
 	    });
-            $(document).on('update', 'form > *', function() {
+            $(document).on('keyup', '#cmd', function() {
                  var c = $("#cmd").val();  
                  if (c.match(/\s$/)) {
                    $("#do").attr('color', 'orange'); 
