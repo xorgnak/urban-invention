@@ -178,18 +178,18 @@ module Nomadic
     <option value='#'>
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button id='t_l' type='button' class='material-icons do form' value='nomadic'>airport_shuttle</button> 
+      <button type='button' class='material-icons do form' id='nomadic'>airport_shuttle</button> 
       <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' placeholder='nomadic'>
-      <button id='t_r' type='button' class='material-icons do form' value='settings'>settings</button>
+      <button type='button' class='material-icons do form' id='settings'>settings</button>
     </p> 
     <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
-      <button id='b_l' type='button' class='material-icons do form' value='tasks'>check_box_outline_blank</button>
+      <button type='button' class='material-icons do form' id='tasks'>check_box_outline_blank</button>
       <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;' placeholder='try me out...'>
-      <button id='b_r' type='button' class='material-icons do form' value='run'>send</button>
+      <button type='button' class='material-icons do form' id='run'>send</button>
     </p> 
   </form>
   <script>
@@ -202,10 +202,10 @@ module Nomadic
             console.log("get", $("#form").serializeArray());
 	    $.map($('.form'), function(n, i) { ia[$(n).attr('name')] = $(n).val(); }); return ia;
 	}
-	function sendForm(th, ac) {
+	function sendForm(th) {
 	    var dx = {};
 	    Object.assign(dx, d);
-	    dx.trigger = [ th, ac ];
+	    dx.trigger = th;
 	    dx.form = getForm();
 	    console.log("send", dx);
             jQuery.post('/', dx, function(dd) {
@@ -240,7 +240,7 @@ module Nomadic
             });
 	    $(document).on('click', '.do', function(ev) { 
 		ev.preventDefault(); 
-		sendForm($(this).attr('id'), $(this).attr('value'));
+		sendForm($(this).attr('id'));
 	    });
 	});
 	</script>
