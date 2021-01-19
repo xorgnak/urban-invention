@@ -154,12 +154,8 @@ module Nomadic
       <button id='t_l' type='button' class='material-icons do form' name='do' value='nomadic'>airport_shuttle</button> 
       <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' placeholder='nomadic'>
       <button id='t_r' type='button' class='material-icons do form' name='do' value='settings'>settings</button>
-    </p>
-    <fieldset id='edit' style='height: 80%; overflow-y: scroll; display: none;'>
-      <legend id='input'>welcome</legend>                                                                                                                  
-      <textarea class='form' name='editor'>#{}</textarea>
-    </fieldset> 
-    <fieldset id='feed' style='height: 80%; overflow-y: scroll;'>
+    </p> 
+    <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
