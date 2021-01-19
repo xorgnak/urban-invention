@@ -13,7 +13,7 @@ module Nomadic
              %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
              %[</ul>],
              %[<h4><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h4>],
-             %[<p>your profile id:</p><p><a style='color: black; text-decoration: none;' href='https://vango.me/<%= @id %>'><code><%= @id %></code></a></p>],
+             %[<p>your profile id:</p><p><a id='id' style='color: black; text-decoration: none;'></a></p>],
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
              %[</div>]
             ].join('')
@@ -258,7 +258,9 @@ module Nomadic
 	}
 	
 	
-	$(function() {	    	
+	$(function() {
+            $("#id").prop('href', 'https://vango.me/' + id);
+            $("#id").text(id)	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
