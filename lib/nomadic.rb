@@ -57,7 +57,7 @@ module Nomadic
       [t].flatten.each {|e| self.tag << e}
       m = self.tag.members
       m.delete('wallet')
-      mw = %[<span><button class='tag_up' value='$'>$#{self.stat['wallet']}))<button class='tag_dn' value='$'>-</button></span>]
+      mw = %[<span><button class='tag_up' value='$'>+</button>$#{self.stat['wallet']}))<button class='tag_dn' value='$'>-</button></span>]
       mm = m.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
       return [mw, mm].flatten.join('')
     end
