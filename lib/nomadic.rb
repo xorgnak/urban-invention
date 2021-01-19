@@ -3,11 +3,9 @@ module Nomadic
   autoload :VERSION, "nomadic/version"
   
   WELCOME = [%[<div style='text-align: center;'>],
-             %[<p><span class='material-icons' style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 200%;'>directions_walk</span></p><h4>simple. flexible. tools.</h4>],
              %[<h2 class='help'>Remain Calm.</h2>],
              %[<p>type the <code>command</code> below to run the <span class='action'>action.</p>],
-             %[</div>],
-             %[<ul>],
+             %[<ul style='text-align: left;'>],
              %[<li><code>+$100</code>Add $100 to your wallet.</li>],
              %[<li><code>-$100</code>Deduct $100 to your wallet.</li>],
              %[<li><code>+tag</code>Increment the "tag" counter.</li>],
@@ -15,7 +13,8 @@ module Nomadic
              %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
              %[</ul>],
              %[<h4><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h4>],
-             %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>]
+             %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
+             %[</div>]
             ].join('')
 
   class Metric
@@ -171,16 +170,16 @@ module Nomadic
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
-      <button type='button' class='do' id='tags' style='width: 65%;'>nomadic</button>
+      <button type='button' class='do' id='tags' style='width: 60%;'>nomadic</button>
       <button type='button' class='material-icons do' id='settings'>notes</button>
     </p> 
-    <fieldset style='height: 80%;'>
+    <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button type='button' class='material-icons do' id='tasks' disabled>check_box_outline_blank</button>
-      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;' placeholder='try me out...'>
+      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 60%;' placeholder='try me out...'>
       <button type='button' class='material-icons do' id='run' disabled>send</button>
     </p> 
   </form>
