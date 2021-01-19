@@ -124,7 +124,7 @@ module Nomadic
       end
     end
     def << h
-      if h[:form][:edit]
+      if h[:form][:edit] != nil && h[:trigger] == 'edit'
         self.md.value = h[:form][:edit]
       end
       db = {}
