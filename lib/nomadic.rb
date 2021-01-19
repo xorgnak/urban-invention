@@ -73,8 +73,8 @@ module Nomadic
     def prompt *p
       @prompt = p[0]
     end
-    def run i
-      "#{i.join(' ')}"
+    def run *i
+      "#{[i].flatten.join(' ')}"
     end
     def << h
       db = {}
