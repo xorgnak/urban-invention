@@ -64,7 +64,7 @@ module Nomadic
       %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>];
     end
     def edit
-      %[<textarea name='settings' style='width: 100%; height: 100%;'>#{self.md.value || INDEX}</textarea>];
+      %[<textarea name='editor' style='width: 100%; height: 100%;'>#{self.md.value || INDEX}</textarea>];
     end
     def wall;
       w = self.wal.to_a.reverse.map { |e|
