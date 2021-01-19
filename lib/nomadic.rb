@@ -239,7 +239,7 @@ module Nomadic
                      $('#tasks').prop('disabled', true);
                    } else {
                      $("#tasks").css('color', 'green');
-                     $('#tasks').prop('disabled', flase); 
+                     $('#tasks').prop('disabled', false); 
                    } 
                    if (c.match(/[^\.]/)) {
                      $("#run").css('color', 'green');
@@ -248,7 +248,7 @@ module Nomadic
                      $("#run").css('color', 'black');
                      $('#run').prop('disabled', true); 
                      $("#tasks").css('color', 'green');                                                                               
-                     $('#tasks').prop('disabled', flase); 
+                     $('#tasks').prop('disabled', false); 
                    }
                  } else {
                    $("#run").css('color', 'black');
