@@ -3,16 +3,11 @@ module Nomadic
   autoload :VERSION, "nomadic/version"
   
   WELCOME = [%[<div style='text-align: center;'>],
-             %[<h2>type your phone number above to begin</h2>],
-             %[<h4>simple. flexible. tools.</h4>],
-             %[<h1 class='material-icons'>],
-             %[<span style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 300%;'>directions_walk</span>],
-             %[</h1>],
-             %[</div>],
-             %[<h2 class='help' style='text-align: center;'>Remain Calm.</h2>],
+             %[<h4><span class='material-icons' style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 200%;'>directions_walk</span>simple. flexible. tools.</h4>],
+             %[<h2 class='help'>Remain Calm.</h2>],
              %[<p>type the <code>command</code> below to run the <span class='action'>action.</p>],
+             %[</div>],
              %[<ul>],
-             %[<li><code>[ ] my new task.</code>Create a new task.</li>],
              %[<li><code>+$100</code>Show your session settings.</li>],
              %[<li><code>-$100</code>Show your user id.</li>],
              %[<li><code>+tag</code>Increment the "tag" counter.</li>],
@@ -171,7 +166,7 @@ module Nomadic
     <option value='#'>
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button type='button' class='material-icons do' id='nomadic'>airport_shuttle</button> 
+      <button type='button' class='material-icons do' id='welcome'>airport_shuttle</button> 
       <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' placeholder='nomadic'>
       <button type='button' class='material-icons do' id='settings'>settings</button>
     </p> 
