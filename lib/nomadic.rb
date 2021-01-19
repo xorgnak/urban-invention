@@ -137,17 +137,22 @@ module Nomadic
 	    </head>
 	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
 	    <form id='form' style='margin: 0, padding: 0;'>
+  <datalist id='cmds'>                                                                                                                                     
+    <option value='tasks'>                                                                                                                                 
+    <option value='profile'>                                                                                                                              
+    <option value='settings'>
+    <option value='help'>                                                                                                                                  
+  </datalist> 
   <datalist id='cmds'>
     <option value='[ ] '>
-    <option value='tasks'>
-    <option value='settings'>
-    <option value='profile'>
-    <option value='logs'>
-    <option value='help'>
+    <option value='+$'>
+    <option value='-$'>
+    <option value='@'>
+    <option value='#'>
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='t_l' type='button' class='material-icons do' value='van'>airport_shuttle</button> 
-      <input class='form' id='t_c' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <input class='form' id='t_c' name='cat' list="cats" style='width: 60%; border: thin solid black;'>
       <button id='b_l' type='button' class='material-icons do' value='scan'>qr_code_scanner</button>
     </p>
     <fieldset style='height: 80%; overflow-y: scroll;'>
