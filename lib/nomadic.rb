@@ -158,7 +158,7 @@ module Nomadic
 	// turn form into json object.
 	function getForm() {
 	    var ia = {};
-            console.log("get", $("#form"));
+            console.log("get", $("#form").serializeArray());
 	    $.map($('#form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
