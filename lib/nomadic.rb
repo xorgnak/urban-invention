@@ -132,8 +132,7 @@ module Nomadic
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	    </head>
 	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
-	    <form id='form' style='position: absolute;'></form>
-	    
+	    <form id='form' style='margin: 0, padding: 0;'>
   <datalist id='cmds'>
     <option value='[ ] '>
     <option value='tasks'>
