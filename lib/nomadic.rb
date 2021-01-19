@@ -72,14 +72,15 @@ module Nomadic
     def tasks
       if self.task.length > 0
         self.task.map { |e|
-        %[<p><button class='material-icons task' type='button' value='#{e}'>done</button><label class='r'>#{e}</label></p>]
-      }.join('')
+          %[<p><button class='material-icons task' type='button' value='#{e}'>done</button><label class='r'>#{e}</label></p>]
+        }.join('')
       else
         "done!"
       end
     end
     def << i
       db = {}
+      @pr = ''
       if m = /^\[\s\]\s?(.*)?/.match(i)
         t = 'tasks'
         if m[1] != nil && m[1] != ''
@@ -95,7 +96,7 @@ module Nomadic
       else
         t = i
         begin
-self.instance_eval(%[@b = lambda { "#{i}" };])
+          self.instance_eval(%[@b = lambda { "#{i}" };])
           o = @b.call
         rescue => re
           o = re
@@ -105,9 +106,10 @@ self.instance_eval(%[@b = lambda { "#{i}" };])
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
       db[:cmd] = t
-      db[:result] = o;
-@db = db
-Redis.new.publish("vm.#{@id}", #{})
+      db[:input] = @pr
+      db[:output] = o;
+      @db = db
+      Redis.new.publish("vm.#{@id}", "#{@db}")
       return db
     end
   end 
