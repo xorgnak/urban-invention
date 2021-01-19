@@ -124,15 +124,12 @@ module Nomadic
       end
     end
     def << h
-      if h[:form][:edit] != nil && h[:trigger] == 'edit'
-        self.md.value = h[:form][:edit]
-      end
       db = {}
       @pr = ''
       if m = /^\[\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
         self.task << m[1]
-        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.to_s}\n"
+        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.tof_s}\n"
         o = tasks
       elsif m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
@@ -160,6 +157,8 @@ module Nomadic
         end
         self.tag << t
         self.log << "##{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
+      elsif h[:trigger] == "save"
+        self.md.value = h[:form][:editor]
       else
         t = h[:form][:cmd]
         begin
