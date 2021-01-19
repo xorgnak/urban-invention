@@ -140,7 +140,7 @@ module Nomadic
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
       <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
-      <button id='do' type='button' class='material-icons' style=''>send</button>
+      <button id='do' type='button' class='material-icons do' style=''>send</button>
 	    </p>
     <fieldset id='out' style='height: 90%; overflow: auto;'>
       <legend id='input'>welcome</legend>
@@ -159,7 +159,7 @@ module Nomadic
 	// sends a message over mqtt
 	function sendForm(th) {
             var d = { id: id, trigger: th, form: getForm() };
-            jQuery.post('/', d);
+            jQuery.post('/', d, function(dd) { $("#input").html(dd.cmd); $("#output").html(dd.output); });
 	}
 
 
@@ -180,11 +180,7 @@ module Nomadic
 	    $(document).on('click', '.do', function(ev) { 
 		ev.preventDefault(); 
 		sendForm($(this).attr('id'));
-	    });
-	    $(document).on('click', "#do", function(ev) { 
-		ev.preventDefault();
-		sendForm('do');
-		$("form").reset();	
+                $("form").reset();
 	    });
 	});
 	</script>
