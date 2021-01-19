@@ -202,10 +202,10 @@ module Nomadic
             console.log("get", $("#form").serializeArray());
 	    $.map($('.form'), function(n, i) { ia[$(n).attr('name')] = $(n).val(); }); return ia;
 	}
-	function sendForm(th) {
+	function sendForm(th, ac) {
 	    var dx = {};
 	    Object.assign(dx, d);
-	    dx.trigger = th;
+	    dx.trigger = [ th, ac ];
 	    dx.form = getForm();
 	    console.log("send", dx);
             jQuery.post('/', dx, function(dd) {
@@ -223,7 +223,7 @@ module Nomadic
 	
 	$(function() {
 	    //            setInterval(function() { sendForm('ping'); }, 10000);	    	
-	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
+	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
 		$("#cmd").val("[X] " + $(this).val()); 
