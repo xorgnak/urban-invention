@@ -54,7 +54,7 @@ module Nomadic
       x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('\n')
       %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>]; end
     def wall;
-      w = self.wal.reverse.map { |e|
+      w = self.wal.to_a.reverse.map { |e|
         j = JSON.parse(e);
         t = Time.now.utc.to_i - j['ts']
         tm = t / 60
