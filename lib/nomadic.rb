@@ -130,8 +130,10 @@ return env;
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
+	    </head>
+	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
+	    <form id='form' style='width: 100vw; height: 100vh; margin: 0;'></form>
+	    
   <datalist id='cmds'>
     <option value='[ ] '>
     <option value='tasks'>
@@ -140,10 +142,9 @@ return env;
     <option value='id'>
     <option value='help'>
   </datalist>
-  <form id='form' style='width: 100vw; height: 100vh; margin: 0;'>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
-      <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
+      <input form='form' id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
       <button id='do' type='button' class='material-icons do' style=''>send</button>
     </p>
     <fieldset style='height: 90%; overflow: auto;'>
