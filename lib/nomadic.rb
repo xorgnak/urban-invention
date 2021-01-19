@@ -53,7 +53,7 @@ module Nomadic
     end
     def id; @id; end
     def welcome; WELCOME; end
-    def settings; %[<textarea name='settings' style='width: 100%; height: 100%;'><%= logs %></textarea>]; end
+    def settings; %[<textarea name='settings' style='width: 100%; height: 100%;'><%= self.logs.join('\n') %></textarea>]; end
     def logs
       self.log.map { |e| %[#{e}\n] }.join('')
     end
