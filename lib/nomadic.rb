@@ -227,10 +227,13 @@ module Nomadic
             $(document).on('keyup', '.form', function() {
                  var c = $(this).val();  
                  if (c.match(/ $/)) {
-                   $("#run").css('color', 'orange'); 
+                   $("#run").css('color', 'orange');
+                 } else if (!c.match(/^\[/)) {
+                   $("#tasks").css('color', 'green');
                  } else if (c != "") {
                    $("#run").css('color', 'green'); 
                  } else {
+                   $("#tasks").css('color', 'black');
                    $("#run").css('color', 'black');
                  }
             });
