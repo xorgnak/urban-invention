@@ -31,7 +31,7 @@ module Nomadic
           %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
           %[</ul>]].join('')
 
-  SETTINGS = [%[<textarea name='settings'><%= @db %></textarea>]].join('')
+  SETTINGS = [%[<textarea name='settings' style='width: 100%; height: 100%;'><%= @db %></textarea>]].join('')
 
   class Metric
     include Redis::Objects
@@ -137,8 +137,8 @@ module Nomadic
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
       db[:cmd] = t
-      db[:input] = @db[:input]
-      db[:output] = o;
+      db[:input] = ERB.new(@db[:input]).result(binding)
+      db[:output] = ERB.new(o).result(binding);
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
       return db
