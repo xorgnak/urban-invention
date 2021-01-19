@@ -38,6 +38,7 @@ module Nomadic
     include Redis::Objects
     hash_key :attr
     sorted_set :stat
+    list :wal
     list :task
     list :note
     set :tag
@@ -49,9 +50,28 @@ module Nomadic
     end
     def id; @id; end
     def welcome; WELCOME; end
-    def settings; %[<textarea name='settings' style='width: 100%; height: 100%;'>#{self.logs}</textarea>]; end
-    def logs
-      self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('')
+    def logs;
+      x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('')
+      %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>]; end
+    def wall;
+      w = self.wal.reverse.map { |e|
+        j = JSON.parse(e);
+        t = Time.now.utc.to_i - j['ts']
+        tm = t / 60
+        th = t / (60 * 60)
+        td = t / ((60 * 60) * 24)
+        if td > 0
+          tt, tu = td, 'd'
+        elsif th > 0
+          tt, tu = th, 'm'
+        elsif tm > 0
+          tt, tu = tm, 'm'
+        else
+          tt, tu = t, 's'
+        end
+        %[<p><span>#{tt}#{tu}</span> <span>#{j['from']}</span> #{j['msg']}</p>]
+      }.join('')
+      %[<div>#{w}</div>];
     end
     def tags
       m = self.tag.members
@@ -218,7 +238,7 @@ module Nomadic
 	
 	
 	$(function() {
-	    //            setInterval(function() { sendForm('ping'); }, 10000);	    	
+            setInterval(function() { sendForm('ping'); }, 10000);	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
