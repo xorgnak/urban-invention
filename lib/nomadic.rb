@@ -258,6 +258,7 @@ module Nomadic
 	    </body>
 </html>
         ]
+    
     def initialize()
       super()
       @vm = Hash.new { |h,k| h[k] = K.new(k) }
