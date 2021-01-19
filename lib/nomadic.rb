@@ -68,15 +68,19 @@ module Nomadic
     def help; HELP; end
     def settings; SETTINGS; end
     def logs
-      self.log.map { |e| %[<p>#{e}</p>] }.join('')
+      self.log.map { |e| %[#{e}\n] }.join('')
     end
-    def tasks
+    def tasks *t
+      if t[0]
+        self.task << t[0]
+        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.to_s}"
+      end
       if self.task.length > 0
         self.task.map { |e|
           %[<p><button class='material-icons task' type='button' value='#{e}'>done</button><label class='r'>#{e}</label></p>]
         }.join('')
       else
-        "done!"
+        "<p style='color: green;'>done!</p>"
       end
     end
     def prompt *p
@@ -88,17 +92,10 @@ module Nomadic
     def << h
       db = {}
       @pr = ''
-      if m = /^\[\s\]\s?(.*)?/.match(h[:form][:cmd])
-        t = 'tasks'
-        if m[1] != nil && m[1] != ''
-          self.task << m[1]
-          self.log << "created task: #{m[1]} at #{Time.now.utc.to_s}"
-        end
-        o = tasks
-      elsif m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
+      if m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
         self.task.delete(m[1])
-        self.log << "finished task: #{m[1]} at #{Time.now.utc.to_s}"
+        self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}"
         o = tasks
       elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)$/.match(h[:form][:cmd])
         a = 1
@@ -118,7 +115,7 @@ module Nomadic
             self.stat.incr(m[3])
           end
         end
-        self.log << "#{t}: #{m[1]}#{a} #{m[4].gsub(/^\s/, '').gsub(/$/, ' ')}at #{Time.now.utc.to_s}"
+        self.log << "# #{m[4].gsub(/^\s/, '')}\n#{t}: #{m[1]}#{a}\n> #{Time.now.utc.to_s}"
       elsif m = /^@(.+)\s(.*)/.match(h[:form][:cmd])
         puts ""
       elsif m = /^#(.+)\s(.*)/.match(h[:form][:cmd])
@@ -132,7 +129,7 @@ module Nomadic
         rescue => re
           o = re
         end
-        self.log << "cmd: #{h[:form][:do]}(#{ar}) at #{Time.now.utc.to_s}"
+        self.log << "# cmd: #{h[:form][:do]}(#{ar})\n> #{Time.now.utc.to_s}"
       end
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
