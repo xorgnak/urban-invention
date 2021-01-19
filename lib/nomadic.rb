@@ -147,15 +147,7 @@ module Nomadic
 
 
 	$(function() {
-	    var show = function(el){
-		return function(msg){ $('#output').innerHTML = msg; }
-	    }(document.getElementById(''));
-
-	    var ws       = new WebSocket('wss://vango.me/ws');
-	    ws.onopen    = function()  { show('websocket opened'); };
-	    ws.onclose   = function()  { show('websocket closed'); }
-	    ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
-	    	
+	    var es = new EventSource('/ws');	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
