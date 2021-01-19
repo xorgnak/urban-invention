@@ -263,7 +263,7 @@ module Nomadic
 	
 	
 	$(function() {
-            $("#id").prop("href", 'https://vango.me/' + id);
+            $("#id").prop("href", 'https://vango.me/?id=' + id);
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
