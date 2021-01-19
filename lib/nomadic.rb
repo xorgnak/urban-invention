@@ -150,7 +150,7 @@ module Nomadic
       <input class='form' id='t_c' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
       <button id='b_l' type='button' class='material-icons do' value='scan'>qr_code_scanner</button>
     </p>
-    <fieldset style='height: 90%; overflow: auto;'>
+    <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
