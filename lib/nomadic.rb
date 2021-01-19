@@ -171,9 +171,9 @@ module Nomadic
 		console.log("got", dd);
 		d.time = dd.timestamp;
 		$("#input").html(dd.cmd); 
-		$("#output").html(dd.result.output);
+		$("#output").html(dd.output);
 		if ( $("#cmd").val() == '' ) {
-                    $("#cmd").val(dd.result.input);
+                    $("#cmd").val(dd.input);
 		}
             });
 	}
