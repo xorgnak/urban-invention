@@ -1,15 +1,6 @@
 module Nomadic
 
   autoload :VERSION, "nomadic/version"
-
-  NOMADIC = [ %[<div style='text-align: center;'>], 
-              %[<p>a simple set of tools to work together and get things done.</p>],
-              %[<h1 class='material-icons'>],
-              %[<span style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 300%;'>directions_walk</span>],
-              %[</h1>],
-              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
-              %[</div>]
-            ].join('');
   
   WELCOME = [%[<div style='text-align: center;'>],
              %[<h2>type your phone number above to begin</h2>],
@@ -17,21 +8,19 @@ module Nomadic
              %[<h1 class='material-icons'>],
              %[<span style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 300%;'>directions_walk</span>],
              %[</h1>],
-            %[</div>]].join('')
-  
-  HELP = [%[<h2 class='help' style='text-align: center;'>Remain Calm.</h2>],
-          
-          %[<p>type the <code>command</code> below to run the <span class='action'>action</span>.</p>],
-          %[<ul>],
-          %[<li><code>[ ] my new task.</code>Create a new task.</li>],
-          %[<li><code>+$100</code>Show your session settings.</li>],
-          %[<li><code>-$100</code>Show your user id.</li>],
-          %[<li><code>+tag</code>Increment the "tag" counter.</li>],
-          %[<li><code>-tag</code>Decrement the "tag" counter.</li>],
-          %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
-          %[</ul>]].join('')
-
-  SETTINGS = [%[<textarea name='settings' style='width: 100%; height: 100%;'><%= logs %></textarea>]].join('')
+             %[</div>],
+             %[<h2 class='help' style='text-align: center;'>Remain Calm.</h2>],
+             %[<p>type the <code>command</code> below to run the <span class='action'>action.</p>],
+             %[<ul>],
+             %[<li><code>[ ] my new task.</code>Create a new task.</li>],
+             %[<li><code>+$100</code>Show your session settings.</li>],
+             %[<li><code>-$100</code>Show your user id.</li>],
+             %[<li><code>+tag</code>Increment the "tag" counter.</li>],
+             %[<li><code>-tag</code>Decrement the "tag" counter.</li>],
+             %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
+             %[</ul>],
+             %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>]
+            ].join('')
 
   class Metric
     include Redis::Objects
@@ -64,11 +53,8 @@ module Nomadic
     end
     def id; @id; end
     def welcome; WELCOME; end
-    def nomadic; NOMADIC; end
-    def help; HELP; end
-    def settings; SETTINGS; end
+    def settings; %[<textarea name='settings' style='width: 100%; height: 100%;'><%= logs %></textarea>]; end
     def logs
-      prompt ''
       self.log.map { |e| %[#{e}\n] }.join('')
     end
     def tasks *t
@@ -104,6 +90,7 @@ module Nomadic
         self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}"
         o = tasks
       elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)$/.match(h[:form][:cmd])
+        prompt ''
         a = 1
         if m[2] == '$'
           t = "wallet"
