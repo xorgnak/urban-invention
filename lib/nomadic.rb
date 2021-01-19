@@ -180,9 +180,9 @@ module Nomadic
       <div id='output'>#{WELCOME}</div>
     </fieldset>
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
-      <button type='button' class='material-icons do' id='tasks'>check_box_outline_blank</button>
+      <button type='button' class='material-icons do' id='tasks' disabled>check_box_outline_blank</button>
       <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;' placeholder='try me out...'>
-      <button type='button' class='material-icons do' id='run'>send</button>
+      <button type='button' class='material-icons do' id='run' disabled>send</button>
     </p> 
   </form>
   <script>
