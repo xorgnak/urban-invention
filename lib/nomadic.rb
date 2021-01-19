@@ -178,18 +178,18 @@ module Nomadic
     <option value='#'>
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button type='button' class='material-icons do form' id='nomadic'>airport_shuttle</button> 
+      <button type='button' class='material-icons do' id='nomadic'>airport_shuttle</button> 
       <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' placeholder='nomadic'>
-      <button type='button' class='material-icons do form' id='settings'>settings</button>
+      <button type='button' class='material-icons do' id='settings'>settings</button>
     </p> 
     <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
-      <button type='button' class='material-icons do form' id='tasks'>check_box_outline_blank</button>
+      <button type='button' class='material-icons do' id='tasks'>check_box_outline_blank</button>
       <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;' placeholder='try me out...'>
-      <button type='button' class='material-icons do form' id='run'>send</button>
+      <button type='button' class='material-icons do' id='run'>send</button>
     </p> 
   </form>
   <script>
