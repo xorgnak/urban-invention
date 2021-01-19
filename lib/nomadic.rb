@@ -170,7 +170,7 @@ module Nomadic
             jQuery.post('/', dx, function(dd) {
 		console.log("got", dd);
 		d.time = dd.timestamp;
-		$("#input").html(dd.cmd); 
+		$("#input").html(dd.form.cmd); 
 		$("#output").html(dd.output);
 		$("#form")[0].reset();
 		if ( $("#cmd").val() == '' ) {
@@ -225,7 +225,7 @@ module Nomadic
     }
     post('/') {
         content_type 'application/json';
-        e = @vm[params[:id]] << params[:cmd]
+        e = @vm[params[:id]] << params[:form][:cmd]
         return JSON.generate(e)
     }
     not_found do
