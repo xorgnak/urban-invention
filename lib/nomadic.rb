@@ -82,6 +82,9 @@ module Nomadic
     def prompt *p
       @prompt = p[0]
     end
+    def run d, c, m
+      
+    end
     def << h
       db = {}
       @pr = ''
@@ -123,17 +126,19 @@ module Nomadic
       else
         t = i
         begin
-          self.instance_eval(%[@b = lambda { #{i} };])
+          ar = h[:form][:cmd].split(' ').map { |e| "\"#{e}\"" }.join(', ')
+          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(#{h[:form][:do]}.to_sym, #{ar}); };])
           o = @b.call
         rescue => re
           o = re
         end
+        
         self.log << "cmd: #{i} at #{Time.now.utc.to_s}"
       end
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
       db[:cmd] = t
-      db[:input] = @prompt
+      db[:input] = @db[:input]
       db[:output] = o;
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
