@@ -69,7 +69,7 @@ module Nomadic
     def wall;
       w = self.wal.to_a.reverse.map { |e|
         j = JSON.parse(e);
-        t = Time.now.utc.to_i - j['ts']
+        t = Time.now.utc.to_i - j['ts'].to_i
         tm = t / 60
         th = t / (60 * 60)
         td = t / ((60 * 60) * 24)
