@@ -164,7 +164,7 @@ module Nomadic
 
 
 	$(function() {
-	    var es = new EventSource('/ws');	    	
+            setInterval(function() { if ( $().val() != '' ) { sendForm('ping'); } }, 10000);	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
