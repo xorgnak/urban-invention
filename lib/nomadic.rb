@@ -26,8 +26,8 @@ module Nomadic
           %[<li><code>[ ] my new task.</code>Create a new task.</li>],
           %[<li><code>+$100</code>Show your session settings.</li>],
           %[<li><code>-$100</code>Show your user id.</li>],
-          %[<li><code>@group me special message!</code>Show your remaining tasks.</li>],
-          %[<li><code>#tag my note for the tag.</code>Show your session history.</li>],
+          %[<li><code>+tag</code>Increment the "tag" counter.</li>],
+          %[<li><code>-tag</code>Decrement the "tag" counter.</li>],
           %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
           %[</ul>]].join('')
 
@@ -70,11 +70,7 @@ module Nomadic
     def logs
       self.log.map { |e| %[#{e}\n] }.join('')
     end
-    def tasks *t
-      if t[0]
-        self.task << [t].flatten.join(' ')
-        self.log << "# [ ] #{j.join(' ')}\n> #{Time.now.utc.to_s}"
-      end
+    def tasks
       if self.task.length > 0
         self.task.map { |e|
           %[<p><button class='material-icons task' type='button' value='#{e}'>done</button><label class='r'>#{e}</label></p>]
@@ -92,7 +88,12 @@ module Nomadic
     def << h
       db = {}
       @pr = ''
-      if m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
+      if m = /^\[\]\s(.*)/.match(h[:form][:cmd])
+        t = "tasks"
+        self.task << m[1]
+        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.to_s}"
+        o = tasks
+      elsif m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
         self.task.delete(m[1])
         self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}"
@@ -116,10 +117,6 @@ module Nomadic
           end
         end
         self.log << "# #{m[4].gsub(/^\s/, '')}\n#{t}: #{m[1]}#{a}\n> #{Time.now.utc.to_s}"
-      elsif m = /^@(.+)\s(.*)/.match(h[:form][:cmd])
-        puts ""
-      elsif m = /^#(.+)\s(.*)/.match(h[:form][:cmd])
-        puts ""
       else
         t = h[:form][:cmd]
         begin
