@@ -162,7 +162,7 @@ module Nomadic
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button id='b_l' type='button' class='material-icons do form' name='do' value='menu'>menu</button>                                                
       <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;'>
-      <button id='exe' type='button' class='material-icons do form' value='send'>send</button>
+      <button id='exe' type='button' class='material-icons do form' name='do' value='send'>send</button>
     </p> 
   </form>
   <script>
