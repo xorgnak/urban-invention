@@ -54,6 +54,9 @@ module Nomadic
       @prompt = ""
       @db = {}
     end
+    def save
+      @db.each_pair {|k,v| self.attr[k] = v }
+    end
     def html
       Kramdown::Document.new(self.md.to_a.join('\n')).to_html
     end
