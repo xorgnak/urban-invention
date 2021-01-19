@@ -55,11 +55,7 @@ module Nomadic
     end
     def tags *t
       Redis.new.publish "TAGS", "#{t}"
-      m = self.tags.members.to_a
-      m.delete("wallet")
-      mw = %[<span><button class='tag' value='wallet'>$#{self.stat['wallet']}</button>#{e}</span>] 
-      mo = m.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
-      return [mw, mo].flatten.join('')
+      self.tags.members.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}.join('')
     end
     def tasks *t
       prompt '[ ] '
