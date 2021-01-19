@@ -233,11 +233,14 @@ module Nomadic
                  if (c.match(/ $/)) {
                    $("#run").css('color', 'orange');
                    $('#run').attr('disabled', 'true'); 
-                 } else if (c != "" && c.match(/^[^\[]/)) {
-                   $("#run").css('color', 'green'); 
-                   $('#run').attr('disabled', 'false');
-                   $("#tasks").css('color', 'green');                                                                                   
-                   $('#tasks').attr('disabled', 'false');
+                 } else if (c != "") {
+                   if (c.match(/^[^\[]/)) {
+                     $("#tasks").css('color', 'green');    
+                     $('#tasks').attr('disabled', 'false');
+                   } else {
+                     $("#run").css('color', 'green');
+                     $('#run').attr('disabled', 'false');                    
+                   }
                  } else {
                    $("#run").css('color', 'black');
                    $('#run').attr('disabled', 'true'); 
