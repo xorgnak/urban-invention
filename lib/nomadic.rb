@@ -127,7 +127,7 @@ module Nomadic
         rescue => re
           o = re
         end
-        self.log << "# cmd: #{h[:trigger]}(#{ar})\n> #{Time.now.utc.to_s}\n"
+        self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n"
       end
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
