@@ -147,7 +147,7 @@ module Nomadic
 	}
 	$(function() {
 	    // create the mqtt client.
-            ws = new WebSocket('wss://vango.me');
+            ws = new WebSocket('ws://vango.me');
 	    
 	    // set callback handlers
 	    ws.onopen = function() { console.log("open") };
