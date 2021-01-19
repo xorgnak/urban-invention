@@ -73,7 +73,7 @@ module Nomadic
     def tasks *t
       if t[0]
         self.task << t.join(' ')
-        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.to_s}"
+        self.log << "# [ ] #{j.join(' ')}\n> #{Time.now.utc.to_s}"
       end
       if self.task.length > 0
         self.task.map { |e|
