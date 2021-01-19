@@ -157,7 +157,7 @@ module Nomadic
         end
         self.tag << t
         self.log << "##{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
-      elsif h[:trigger] == "save"
+      elsif h[:form][:editor] != nil && h[:trigger] == "save"
         self.md.value = h[:form][:editor]
       else
         t = h[:form][:cmd]
