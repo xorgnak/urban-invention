@@ -48,6 +48,16 @@ module Nomadic
       @prompt = ""
       @db = {}
     end
+    def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
+      self.wal << JSON.generate(h)
+    end
+    def user u
+      if /^Nx\w(10)/.match(u)
+        K.new(u)
+      else
+        self
+      end
+    end
     def id; @id; end
     def welcome; WELCOME; end
     def logs;
@@ -97,7 +107,13 @@ module Nomadic
       @prompt = p[0]
     end
     def run *i
-      ERB.new("<%= #{[i].flatten.join(' ')} %>").result(binding)
+      if user(i[0])
+        u = i.shift
+        user(u).msg(from: @id, to: u, msg: i.join(' '))
+        logs
+      else
+        ERB.new("<%= #{[i].flatten.join(' ')} %>").result(binding)
+      end
     end
     def << h
       db = {}
@@ -237,8 +253,7 @@ module Nomadic
 	}
 	
 	
-	$(function() {
-            setInterval(function() { sendForm('wall'); }, 10000);	    	
+	$(function() {	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
