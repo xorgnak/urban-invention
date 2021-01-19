@@ -92,36 +92,14 @@ module Nomadic
       @db = db
       return db
     end
-  end
-  
-  @mqtt = PahoMqtt::Client.new()
-  @mqtt.on_message do |m|
-    Redis.new.publish "mqtt/#{m.topic}", m.payload
-  end
-  @mqtt.connect('vango.me', 1883)
-  @mqtt.subscribe(['#', 1])
-  def self.mqtt
-    @mqtt
-  end
-  @tokens = Redis::HashKey.new('tokens')
-  Process.detach(
-    fork {
-      loop {
-        t = Time.now.utc
-        r = []; 10.times { r << rand(16).to_s(16) }
-        @tokens[r.join('')] = t.to_i
-        @mqtt.publish("time", JSON.generate({ epoch: t.to_i, clock: t.to_s, token: r.join('') }))
-        sleep 1
-      }
-    }
-  )
+  end 
   
   class App < Sinatra::Base
     HTML = %[
 <DOCTYPE html>
   <head>
     <style>
-      #i > *  { vertical-align: middle; font-size: large; }
+      #i > *  { vertical-align: middle; font-size: medium; }
       .l { left: 0; }
       .r { right: 0; }
       code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -144,98 +122,62 @@ module Nomadic
   </datalist>
   <form style='width: 100vw; height: 100vh; margin: 0;'>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button id='pic' type='button' class='material-icons' style=''>camera</button> 
+      <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
       <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
-      <button id='exe' type='button' class='material-icons' style=''>send</button>
-    </p>
-    <fieldset style='height: 90%; overflow: auto;'>
+      <button id='do' type='button' class='material-icons' style=''>send</button>
+	    </p>
+    <fieldset id='out' style='height: 90%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
   </form>
 	    <script>
 	    // get unique id OR use one passed in.
-	    var id = "<%= params[:id] || rand_id %>";
+	var id = "<%= params[:id] || rand_id %>";
+        var state = { stage: 0 };
 	// turn form into json object.
 	function getForm() {
 	    var ia = {};
 	    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	// sends a message over mqtt
-	function sendMqtt(topic, payload) {
-	    message = new Paho.MQTT.Message(payload);
-	    message.destinationName = topic;
-	    client.send(message);
-	}
-	// called when the client connects
-	function onConnect() {
-	    // Once a connection has been made, make a subscription and send a message.
-	    console.log("onConnect");
-	    client.subscribe("time");
-	    client.subscribe(id);
-	    sendMqtt('hive', id);
-	}
-	// called when the client loses its connection
-	function onConnectionLost(responseObject) {
-	    if (responseObject.errorCode !== 0) {
-		console.log("onConnectionLost:", responseObject);
-	    }
-	}
-
-	// called when a message arrives
-	function onMessageArrived(message) {
-	    console.log("onMessageArrived:", message);
+	function sendForm(th) {
+            var d = { id: id, trigger: th, form: getForm() };
+            ws.send(JSON.stringify(d));
 	}
 	$(function() {
 	    // create the mqtt client.
-            client = new Paho.MQTT.Client('vango.me', Number(8083), id);
+            ws = new WebSocket('wss://vango.me');
 	    
 	    // set callback handlers
-	    client.onConnectionLost = onConnectionLost;
-	    client.onMessageArrived = onMessageArrived;
+	    ws.onopen = function() { console.log("open") };
+	    ws.onclose = function() { console.log("closed"); };
+	    ws.onmessage = function(m) {
+		console.log("onmessage", m);
+	    };
 	    
-	    // connect the client
-	    client.connect({useSSL: true, userName: "testuser", password: "testpass", onSuccess:onConnect});
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
 		$("#cmd").val("[X] " + $(this).val()); 
 	    });
-	    $(document).on('click', '.goto', function(ev) { 
-		ev.preventDefault(); 
-		jQuery.post(
-		    '/', 
-		    { goto: $(this).val(), id: id, cmd: $('#cmd').val(), form: getForm() }
-		);
+	    $(document).on('click', '#add', function(ev) {
+		ev.preventDefault();
+		$("#adds").toggle();
 		
 	    });
-	    $(document).on('click', "#exe", function(ev) { 
+	    $(document).on('click', '.do', function(ev) { 
+		ev.preventDefault(); 
+		sendForm($(this));
+	    });
+	    $(document).on('click', "#do", function(ev) { 
 		ev.preventDefault();
-		var cmd = $("#cmd").val();
-		var d = { id: id, cmd: $("#cmd").val(), form: getForm() };
-		if (cmd.match(/^[@#\/]\w+/g)) {
-		    // get topic from cmd
-		    var pla = cmd.split(" ");
-		    d.topic = pla.shift();
-		    d.payload = pla.join(" ");
-		    sendMqtt(id, JSON.generate(d));
-		    $("#cmd").val("");
-		} else {
-		    // send d to server, display results, clear input.
-		    jQuery.post(
-			'/', d, function(d) { 
-			    console.log("post", d);
-			    if ( d.output ) { 
-				$("#output").html(d.output); 
-				$("#input").html(d.cmd); 
-			    }
-			}); 
-		    $("#cmd").val("");
-		}
-      });
-    });
-  </script>
-</body>
+		sendForm($(this));
+		$("form").reset();	
+	    });
+	});
+	</script>
+	    </body>
 </html>
         ]
     def initialize()
@@ -250,12 +192,28 @@ module Nomadic
     configure do
       set :bind, '0.0.0.0'
       set :port, 8080
+      set :server, 'thin'
+      set :sockets, []
     end
     before do
       puts "#{request.request_method} #{request.fullpath} #{params}"
     end
     get('/') {
-      ERB.new(HTML).result(binding)
+      if !request.websocket?
+        ERB.new(HTML).result(binding)
+      else
+        request.websocket do |ws|
+          ws.onopen do
+            ws.send("SYN")
+          end
+          ws.onmessage do |msg|
+            EM.next_tick { settings.sockets.each { |s| s.send(msg) } }
+          end
+          ws.onclose do
+            settings.sockets.delete(ws)
+          end
+        end
+      end
     }
     post('/') {
         content_type 'application/json';
