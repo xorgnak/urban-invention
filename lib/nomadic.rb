@@ -68,9 +68,14 @@ module Nomadic
     def help; HELP; end
     def settings; SETTINGS; end
     def logs
+      prompt ''
       self.log.map { |e| %[#{e}\n] }.join('')
     end
-    def tasks
+    def tasks *t
+      prompt '[ ] '
+      if t[0]
+        self.task << "#{t.join(' ')}"
+      end
       if self.task.length > 0
         self.task.map { |e|
           %[<p><button class='material-icons task' type='button' value='#{e}'>done</button><label class='r'>#{e}</label></p>]
@@ -121,7 +126,12 @@ module Nomadic
         t = h[:form][:cmd]
         begin
           ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
-          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(:'#{h[:trigger] || "run"}', "#{h[:form][:cmd]}"); };])
+          if t.split(' ').length > 0
+            arr = ", #{ar}"
+          else
+            arr = ''
+          end
+          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(:'#{h[:trigger]}'#{arr}); };])
           o = @b.call
         rescue => re
           o = re
@@ -135,6 +145,7 @@ module Nomadic
       db[:output] = o;
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
+      prompt
       return db
     end
   end 
