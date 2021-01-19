@@ -140,9 +140,9 @@ module Nomadic
   <datalist id='cmds'>
     <option value='[ ] '>
     <option value='tasks'>
+    <option value='settings'>
+    <option value='profile'>
     <option value='logs'>
-    <option value='sessions'>
-    <option value='id'>
     <option value='help'>
   </datalist>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
@@ -191,6 +191,16 @@ module Nomadic
 		ev.preventDefault(); 
 		$("#cmd").val("[X] " + $(this).val()); 
 	    });
+            $(document).on('update', 'form > *', function() {
+                 var c = $("#cmd").val();  
+                 if (c.match(/\s$/)) {
+                   $("#do").attr('color', 'orange'); 
+                 } else if (c != "") {
+                   $("#do").attr('color', 'green'); 
+                 } else {
+                   $("#do").attr('color', 'black');
+                 }
+            });
 	    $(document).on('click', '#van', function(ev) {
 		ev.preventDefault();
                 sendForm('van');
