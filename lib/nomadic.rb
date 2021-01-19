@@ -57,7 +57,7 @@ module Nomadic
       m.delete("wallet")
       mw = %[<span><button class='tag' value='wallet'>$#{self.stat['wallet']}</button>#{e}</span>] 
       mo = m.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
-      [mw, mo].flatten.join('')
+      return [mw, mo].flatten.join('')
     end
     def tasks *t
       prompt '[ ] '
