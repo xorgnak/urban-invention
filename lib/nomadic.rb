@@ -206,7 +206,7 @@ module Nomadic
 		console.log("got", dd);
 		d.time = dd.timestamp;
 		$("#input").html(dd.cmd); 
-		$("#output").html(marked(dd.output));
+		$("#output").html(dd.output);
 		$("#form")[0].reset();
 		if ( $("#b").val() == '' ) {
                     $("#b").val(dd.input);
