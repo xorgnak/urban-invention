@@ -137,7 +137,7 @@ module Nomadic
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
       db[:cmd] = t
-      db[:input] = ERB.new(@db[:input] || '').result(binding)
+      db[:input] = @db[:input]
       db[:output] = ERB.new(o).result(binding);
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
