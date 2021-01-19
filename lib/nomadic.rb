@@ -200,21 +200,10 @@ module Nomadic
         ERB.new(HTML).result(binding)
     }
     get('/ws') {
-      ws = Faye::WebSocket.new(env)
-      ts = Time.now.utc.to_i
-      ws.ping ts do |ev|
-        puts "works."
+      stream do |out|
+        out << %[data: { time: "#{Time.now.utc.to_i}" }]
+        sleep 1
       end
-      ws.on :open do |ev|
-        ws.send(ev.data)
-      end
-      ws.on :message do |ev|
-        ws.send(ev.data)
-      end
-      ws.on :close do |ev|
-        ws = nil 
-      end
-      ws.rack_response
     }
     post('/') {
         content_type 'application/json';
