@@ -72,7 +72,7 @@ module Nomadic
     end
     def tasks *t
       if t[0]
-        self.task << t.join(' ')
+        self.task << [t].flatten.join(' ')
         self.log << "# [ ] #{j.join(' ')}\n> #{Time.now.utc.to_s}"
       end
       if self.task.length > 0
