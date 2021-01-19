@@ -50,7 +50,7 @@ module Nomadic
     def welcome; WELCOME; end
     def settings; %[<textarea name='settings' style='width: 100%; height: 100%;'><%= self.logs %></textarea>]; end
     def logs
-      self.log.map { |e| %[#{e}\n] }.join('')
+      self.log.reverse.map { |e| %[#{e}\n] }.join('')
     end
     def tasks *t
       prompt '[ ] '
@@ -77,12 +77,12 @@ module Nomadic
       if m = /^\[\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
         self.task << m[1]
-        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.to_s}"
+        self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.to_s}\n"
         o = tasks
       elsif m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
         self.task.delete(m[1])
-        self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}"
+        self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}\n"
         o = tasks
       elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)$/.match(h[:form][:cmd])
         prompt ''
@@ -103,7 +103,7 @@ module Nomadic
             self.stat.incr(m[3])
           end
         end
-        self.log << "# #{m[4].gsub(/^\s/, '')}\n#{t}: #{m[1]}#{a}\n> #{Time.now.utc.to_s}"
+        self.log << "# #{m[4].gsub(/^\s/, '')}\n#{t}: #{m[1]}#{a} -> #{self.stat[m[3]]}\n> #{Time.now.utc.to_s}\n"
       else
         t = h[:form][:cmd]
         begin
@@ -118,7 +118,7 @@ module Nomadic
         rescue => re
           o = re
         end
-        self.log << "# cmd: #{h[:trigger]}(#{ar})\n> #{Time.now.utc.to_s}"
+        self.log << "# cmd: #{h[:trigger]}(#{ar})\n> #{Time.now.utc.to_s}\n"
       end
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
