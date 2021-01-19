@@ -52,6 +52,13 @@ module Nomadic
     def logs
       self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('')
     end
+    def tags
+      m = self.tags.members
+      m.delete("wallet")
+      mw = %[<span><button class='tag' value='wallet'>$#{self.stat['wallet']}</button>#{e}</span>] 
+      mo = m.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
+      [mw, mo].flatten.join('')
+    end
     def tasks *t
       prompt '[ ] '
       if t[0]
@@ -152,12 +159,6 @@ module Nomadic
 	    </head>
 	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
 	    <form id='form' style='margin: 0, padding: 0;'>
-  <datalist id='cats'>                                                                                                                                     
-    <option value='tasks'>                                                                                                                                 
-    <option value='profile'>                                                                                                                              
-    <option value='settings'>
-    <option value='help'>                                                                                                                                  
-  </datalist> 
   <datalist id='cmds'>
     <option value='[ ] '>
     <option value='+$'>
@@ -167,7 +168,7 @@ module Nomadic
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>airport_shuttle</button> 
-      <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' placeholder='nomadic'>
+      <button type='button' id='t_c' class='do' id='tags'>nomadic</button>
       <button type='button' class='material-icons do' id='settings'>settings</button>
     </p> 
     <fieldset style='height: 80%;'>
@@ -223,6 +224,16 @@ module Nomadic
                 $("#run").css('color', 'red');
                 $('#run').prop('disabled', false); 
 	    });
+            $(document).on('click', '.tag_up', function() {
+                $("#b_c").val("+" + $(this).val());                                                                                                     
+                $("#run").css('color', 'orange');                                                                                                             
+                $('#run').prop('disabled', true); 
+            });
+            $(document).on('click', '.tag_dn', function() {
+                $("#b_c").val("-" + $(this).val() + " ");                                                                                     
+                $("#run").css('color', 'orange');
+                $('#run').prop('disabled', true); 
+            }); 
             $(document).on('keyup', '.form', function() {
                  var c = $(this).val();  
                  if (c.match(/ $/)) {
