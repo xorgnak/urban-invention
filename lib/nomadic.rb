@@ -163,7 +163,7 @@ return env;
 	    $.map($('#form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
-	    var dx;
+	    var dx = {};
 	    Object.assign(dx, d);
 	    dx.trigger = th;
 	    dx.form = getForm();
