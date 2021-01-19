@@ -170,7 +170,7 @@ module Nomadic
             jQuery.post('/', dx, function(dd) {
 		console.log("got", dd);
 		d.time = dd.timestamp;
-		$("#input").html(dd.form.cmd); 
+		$("#input").html(dd.cmd); 
 		$("#output").html(dd.output);
 		$("#form")[0].reset();
 		if ( $("#cmd").val() == '' ) {
