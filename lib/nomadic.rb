@@ -95,7 +95,13 @@ module Nomadic
       else
         t = i
         begin
-          self.instance_eval %[@b = lambda { #{i} };]
+          self.instance_eval %[@b = lambda { 
+env = { input: "#{i}", output: 0 }; 
+x = env[:output]; 
+#{i}; 
+env[:output] = x; 
+return env; 
+};]
           o = @b.call
         rescue => re
           o = re
@@ -105,7 +111,7 @@ module Nomadic
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
       db[:cmd] = t
-      db[:output] = o;
+      db[:result] = o;
       @db = db
       return db
     end
@@ -159,7 +165,11 @@ module Nomadic
 	// sends a message over mqtt
 	function sendForm(th) {
             var d = { id: id, trigger: th, form: getForm() };
-            jQuery.post('/', d, function(dd) { $("#input").html(dd.cmd); $("#output").html(dd.output); });
+            jQuery.post('/', d, function(dd) { 
+              $("#input").html(dd.cmd); 
+              $("#output").html(dd.result.output);
+              $("#cmd").val(dd.result.input);
+            });
 	}
 
 
@@ -180,7 +190,6 @@ module Nomadic
 	    $(document).on('click', '.do', function(ev) { 
 		ev.preventDefault(); 
 		sendForm($(this).attr('id'));
-                $("form").reset();
 	    });
 	});
 	</script>
