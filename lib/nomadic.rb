@@ -93,7 +93,7 @@ module Nomadic
         self.task.delete(m[1])
         self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}\n"
         o = tasks
-      elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)?$/.match(h[:form][:cmd])
+      elsif m = /^([\+\-])(\$)?(.+)(\s.*)?$/.match(h[:form][:cmd])
         prompt ''
         a = 1
         if m[2] == '$'
