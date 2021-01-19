@@ -13,7 +13,11 @@ module Nomadic
              %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
              %[</ul>],
              %[<h4><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h4>],
-             %[<p>your profile id:</p><p><a id='id' style='color: black; text-decoration: none;'></a></p>],
+             %[<nav>],
+             %[<a id='id' href='https://vango.me/?id=<%= user_id %>' class='material-icons link'>save</a>],
+             %[<a id='id' href='https://vango.me/<%= user_id %>' class='material-icons link'>page</a>],
+             %[<a id='id' href='https://vango.me/' class='material-icons link'>model_training</a>],
+             %[</nav>],
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
              %[</div>]
             ].join('')
@@ -193,6 +197,7 @@ module Nomadic
 		    .r { right: 0; }
 		    code { border: thin solid black;  padding: 0 1% 0 1%; }
 		    .tag { border: thin solid black; }
+                    .link { color: black; text-decoration: none; border: thin solid black; border-radius: 10px; }
 		  </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
