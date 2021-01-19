@@ -59,6 +59,7 @@ module Nomadic
     list :log
     def initialize u
       @id = u
+      @prompt = ""
       @db = {}
     end
     def id; @id; end
@@ -77,6 +78,9 @@ module Nomadic
       else
         "done!"
       end
+    end
+    def prompt p
+      @prompt = p
     end
     def << i
       db = {}
@@ -106,7 +110,7 @@ module Nomadic
       db[:stat] = self.stat.members(with_scores: true).to_h
       db[:attr] = self.attr.all
       db[:cmd] = t
-      db[:input] = @pr
+      db[:input] = @prompt
       db[:output] = o;
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
