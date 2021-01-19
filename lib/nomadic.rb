@@ -16,6 +16,7 @@ module Nomadic
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
              %[</div>]
             ].join('')
+  INDEX = [%[# Hello, World!]].join('')
 
   class Metric
     include Redis::Objects
@@ -38,6 +39,7 @@ module Nomadic
     include Redis::Objects
     hash_key :attr
     sorted_set :stat
+    value :md
     list :wal
     list :task
     list :note
@@ -47,6 +49,9 @@ module Nomadic
       @id = u
       @prompt = ""
       @db = {}
+    end
+    def html
+      Kramdown::Document.new(self.md.to_a.join('\n')).to_html
     end
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
       self.wal << JSON.generate(h)
@@ -62,7 +67,11 @@ module Nomadic
     def welcome; WELCOME; end
     def logs;
       x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('\n')
-      %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>]; end
+      %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>];
+    end
+    def edit
+      %[<textarea name='settings' style='width: 100%; height: 100%;'>#{self.md || INDEX}</textarea>];
+    end
     def wall;
       w = self.wal.to_a.reverse.map { |e|
         j = JSON.parse(e);
@@ -207,7 +216,7 @@ module Nomadic
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
       <button type='button' class='do' id='tags' style='width: 60%;'>nomadic</button>
-      <button type='button' class='material-icons do' id='settings'>notes</button>
+      <button type='button' class='material-icons do' id='edit'>notes</button>
     </p> 
     <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
@@ -332,6 +341,7 @@ module Nomadic
     get('/') {
         ERB.new(HTML).result(binding)
     }
+    get('/:id') { @vm[params[:id]].html }
     post('/') {
         content_type 'application/json';
         e = @vm[params[:id]] << params
