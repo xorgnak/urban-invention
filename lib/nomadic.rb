@@ -124,7 +124,7 @@ module Nomadic
 		<head>
 		  <style>
 .i > *  { vertical-align: middle; font-size: medium; }
-.i > button { text-align: center; }
+.i > button { text-align: center; padding: 0; }
 		    .l { left: 0; }
 		    .r { right: 0; }
 		    code { border: thin solid black;  padding: 0 1% 0 1%; }
