@@ -55,7 +55,11 @@ module Nomadic
     end
     def tags *t
       [t].flatten.each {|e| self.tag << e}
-      self.tag.members.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}.join('')
+      m = self.tag.members
+      m.delete('wallet')
+      mw = %[<span><button class='tag_up' value='$'>$#{self.stat['wallet']}))<button class='tag_dn' value='$'>-</button></span>]
+      mm = m.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}
+      return [mw, mm].flatten.join('')
     end
     def tasks *t
       prompt '[ ] '
@@ -167,7 +171,7 @@ module Nomadic
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>airport_shuttle</button> 
-      <button type='button' class='do' id='tags'>nomadic</button>
+      <button type='button' class='do' id='tags' style='width: 65%;'>nomadic</button>
       <button type='button' class='material-icons do' id='settings'>settings</button>
     </p> 
     <fieldset style='height: 80%;'>
