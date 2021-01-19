@@ -53,8 +53,7 @@ module Nomadic
     def logs
       self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('')
     end
-    def tags *t
-      [t].flatten.each {|e| self.tag << e}
+    def tags
       m = self.tag.members
       m.delete('wallet')
       mw = %[<span class='tag'><button class='tag_up' value='$'>+</button>$#{self.stat['wallet']}<button class='tag_dn' value='$'>-</button></span>]
@@ -112,7 +111,7 @@ module Nomadic
             self.stat.incr(m[3])
           end
         end
-        tags t
+        tags t.split(" ")[0]
         self.log << "##{m[4] || 'stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[m[3]]}\n> #{Time.now.utc.to_s}\n"
       else
         t = h[:form][:cmd]
