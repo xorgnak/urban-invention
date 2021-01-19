@@ -211,6 +211,7 @@ module Nomadic
 		if ( $("#b").val() == '' ) {
                     $("#b").val(dd.input);
 		}
+                $("#tasks").css('color', 'black');
                 $("#run").css('color', 'black');
             });
 	}
