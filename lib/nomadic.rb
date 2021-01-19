@@ -19,19 +19,19 @@ module Nomadic
              %[</h1>],
             %[</div>]].join('')
   
-  HELP = [%[<h2 style='text-align: center;'>Remain Calm.</h2>],
+  HELP = [%[<h2 class='help' style='text-align: center;'>Remain Calm.</h2>],
+          
           %[<p>type the <code>command</code> below to run the <span class='action'>action</span>.</p>],
           %[<ul>],
-          %[<li><code>[ ] my new task.</code><span class='action'>Create a new task.</span></li>],
-          %[<li><code>settings</code><span class='action'>Show your session settings.</span></li>],
-          %[<li><code>id</code><span class='action'>Show your user id.</span></li>],
-          %[<li><code>tasks</code><span class='action'>Show your remaining tasks.</span></li>],
-          %[<li><code>logs</code><span class='action'>Show your session history.</span></li>],
-          %[<li><code>help</code><span class='action'>Show this help.</span></li>],
-          %[<li><code>2 + 2</code><span class='action'>Simple math using the +,-,*,/,**, and () operators.</span></li>],
+          %[<li><code>[ ] my new task.</code>Create a new task.</li>],
+          %[<li><code>+$100</code>Show your session settings.</li>],
+          %[<li><code>-$100</code>Show your user id.</li>],
+          %[<li><code>@group me special message!</code>Show your remaining tasks.</li>],
+          %[<li><code>#tag my note for the tag.</code>Show your session history.</li>],
+          %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
           %[</ul>]].join('')
 
-  SETTINGS = [%[settings...]].join('')
+  SETTINGS = [%[<textarea name='settings'><%= @db %></textarea>]].join('')
 
   class Metric
     include Redis::Objects
@@ -97,6 +97,35 @@ module Nomadic
         self.task.delete(m[1])
         self.log << "finished task: #{m[1]} at #{Time.now.utc.to_s}"
         o = tasks
+      elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)$/.match(i)
+        md = m[4].gsub(/^\s/, '');
+        if m[2] == '$'
+          if m[1] == '-'
+            self.stat.decr('wallet', m[3].to_i)
+          else
+            self.stat.incr('wallet', m[3].to_i)
+          end
+          if md != ''
+            self.log << "wallet: #{m[1]}$#{m[3]} for #{m[4]} at #{Time.now.utc.to_s}"
+          else
+            self.log << "wallet: #{m[1]}$#{m[3]} at #{Time.now.utc.to_s}"
+          end
+        else
+          if m[1] == '-'
+            self.stat.decr(m[3])
+          else
+            self.stat.incr(m[3])
+          end
+          if md != ''
+            self.log << "#{m[3]}: #{m[1]}1 for #{m[4]} at #{Time.now.utc.to_s}"
+          else
+            self.log << "#{m[3]}: #{m[1]}1 at #{Time.now.utc.to_s}"
+          end
+        end
+      elsif m = /^@(.+)\s(.*)/.match(i)
+        puts ""
+      elsif m = /^#(.+)\s(.*)/.match(i)
+        puts ""
       else
         t = i
         begin
