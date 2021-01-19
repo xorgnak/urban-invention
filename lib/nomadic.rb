@@ -104,14 +104,14 @@ module Nomadic
             self.stat.incr('wallet', a)
           end
         else
-          t = m[3]
+          t = m[3].split(' ')[0]
           if m[1] == '-'
             self.stat.decr(m[3])
           else
             self.stat.incr(m[3])
           end
         end
-        self.tag << t.split(" ")[0]
+        self.tag << t
         self.log << "##{m[4] || 'stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[m[3]]}\n> #{Time.now.utc.to_s}\n"
       else
         t = h[:form][:cmd]
