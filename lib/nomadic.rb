@@ -111,7 +111,7 @@ module Nomadic
     end
     def run *i
       Redis.new.publish "RUN", "#{i}"
-      if /^Nx\d{10}/.match(i[0])
+      if /^Nx\w{10}/.match(i[0])
         u = i.shift
         K.new(u).msg(from: @id, to: u, msg: i.join(' '))
         logs
