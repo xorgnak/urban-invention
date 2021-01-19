@@ -95,7 +95,7 @@ module Nomadic
       else
         t = i
         begin
-self.instance_eval %[@b = lambda { "#{i}" };]
+self.instance_eval(%[@b = lambda { "#{i}" };])
           o = @b.call
         rescue => re
           o = re
