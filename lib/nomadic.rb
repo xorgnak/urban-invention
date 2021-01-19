@@ -117,15 +117,15 @@ return env;
   
   class App < Sinatra::Base
     HTML = %[
-<DOCTYPE html>
-  <head>
-    <style>
-      #i > *  { vertical-align: middle; font-size: medium; }
-      .l { left: 0; }
-      .r { right: 0; }
-      code { border: thin solid black;  padding: 0 1% 0 1%; }
-      .action { border: thin dotted red; border-radius: 10px; }
-    </style>
+	      <DOCTYPE html>
+		<head>
+		  <style>
+		    #i > *  { vertical-align: middle; font-size: medium; }
+		    .l { left: 0; }
+		    .r { right: 0; }
+		    code { border: thin solid black;  padding: 0 1% 0 1%; }
+		    .action { border: thin dotted red; border-radius: 10px; }
+		  </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
@@ -145,35 +145,37 @@ return env;
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
       <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
       <button id='do' type='button' class='material-icons do' style=''>send</button>
-	    </p>
-    <fieldset id='out' style='height: 90%; overflow: auto;'>
+    </p>
+    <fieldset style='height: 90%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
   </form>
-	    <script>
-	    // get unique id OR use one passed in.
+  <script>
+    // get unique id OR use one passed in.
 	var id = "<%= params[:id] || rand_id %>";
-        var db = { };
+        var d = { id: id };
 	// turn form into json object.
 	function getForm() {
 	    var ia = {};
 	    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
-            var d = { id: id, trigger: th, form: getForm() };
-            jQuery.post('/', d, function(dd) { 
-              $("#input").html(dd.cmd); 
-              $("#output").html(dd.result.output);
-              if ( $("#cmd").val() == '' ) {
-                $("#cmd").val(dd.result.input);
-              }
+	    var dx = d;
+	    dx.trigger = th;
+	    dx.form = getForm();
+            jQuery.post('/', dx, function(dd) { 
+		$("#input").html(dd.cmd); 
+		$("#output").html(dd.result.output);
+		if ( $("#cmd").val() == '' ) {
+                    $("#cmd").val(dd.result.input);
+		}
             });
 	}
-
-
+	
+	
 	$(function() {
-            setInterval(function() { sendForm('ping'); }, 10000);	    	
+	    //            setInterval(function() { sendForm('ping'); }, 10000);	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
@@ -183,8 +185,6 @@ return env;
 		ev.preventDefault();
                 sendForm('van');
 		// get lat/lon
-                // convert to gridsquare
-                // set to #cmd.
 	    });
 	    $(document).on('click', '.do', function(ev) { 
 		ev.preventDefault(); 
