@@ -32,7 +32,24 @@ module Nomadic
           %[</ul>]].join('')
 
   SETTINGS = [%[settings...]].join('')
-  
+
+  class Metric
+    include Redis::Objects
+    sorted_set :stat
+    def initialize k
+      @id = k
+    end
+    def id; @id; end
+    def up k
+      self.stat.incr(k)
+    end
+    def dn k
+      self.stat.decr(k)
+    end
+    def to_h
+      self.stat.members(with_scores: true).to_h
+    end
+  end
   class K
     include Redis::Objects
     hash_key :attr
@@ -174,6 +191,7 @@ module Nomadic
     def initialize()
       super()
       @vm = Hash.new { |h,k| h[k] = K.new(k) }
+      @metrics = Hash.new { |h,k| h[k] = Metrics.new(k) }
     end
     helpers do
       def rand_id
@@ -186,16 +204,11 @@ module Nomadic
       set :server, 'thin'
     end
     before do
+      @metrics[:referals].up request.referer
       Redis.new.publish "App.#{request.request_method}", "#{request.fullpath} #{params}"
     end
     get('/') {
         ERB.new(HTML).result(binding)
-    }
-    get('/ws') {
-      stream do |out|
-        out << %[data: { time: "#{Time.now.utc.to_i}" }]
-        sleep 1
-      end
     }
     post('/') {
         content_type 'application/json';
@@ -203,14 +216,18 @@ module Nomadic
         return JSON.generate(e)
     }
     not_found do
-      Redis.new.publish "404", JSON.generate({
-                                               method: request.request_method,
-                                               host: request.host,
-                                               port: request.port,
-                                               path: request.fullpath,
-                                               referer: request.referer,
-                                               params: params
-                                             })
+      h = {
+        method: request.request_method,
+        host: request.host,
+        port: request.port,
+        path: request.fullpath,
+        referer: request.referer,
+        params: params
+      }
+      t = Time.now.utc.to_i
+      Redis::Set.new("404s") << t
+      Redis::HashKey.new("404")[t] = JSON.generate(h)
+      Redis.new.publish "404.#{t}", JSON.generate(h)
     end
   end
   def self.begin
