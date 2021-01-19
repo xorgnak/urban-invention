@@ -212,9 +212,9 @@ module Nomadic
                     $("#b").val(dd.input);
 		}
                 $("#tasks").css('color', 'black');
-                $('#tasks').attr('disabled', 'true'); 
+                $('#tasks').prop('disabled', true); 
                 $("#run").css('color', 'black');
-                $('#run').attr('disabled', 'true'); 
+                $('#run').prop('disabled', true); 
             });
 	}
 	
@@ -226,26 +226,26 @@ module Nomadic
 		ev.preventDefault(); 
 		$("#b_c").val("[X] " + $(this).val());
                 $("#run").css('color', 'red');
-                $('#run').attr('disabled', 'false'); 
+                $('#run').prop('disabled', false); 
 	    });
             $(document).on('keyup', '.form', function() {
                  var c = $(this).val();  
                  if (c.match(/ $/)) {
                    $("#run").css('color', 'orange');
-                   $('#run').attr('disabled', 'true'); 
+                   $('#run').prop('disabled', true); 
                  } else if (c != "") {
                    if (c.match(/^[^\[]/)) {
                      $("#tasks").css('color', 'green');    
-                     $('#tasks').attr('disabled', 'false');
+                     $('#tasks').prop('disabled', false);
                    } else {
                      $("#run").css('color', 'green');
-                     $('#run').attr('disabled', 'false');                    
+                     $('#run').prop('disabled', false);                    
                    }
                  } else {
                    $("#run").css('color', 'black');
-                   $('#run').attr('disabled', 'true'); 
+                   $('#run').prop('disabled', true); 
                    $("#tasks").css('glass', 'black');                                                                                                      
-                   $('#tasks').attr('disabled', 'true'); 
+                   $('#tasks').prop('disabled', true); 
                  }
             });
 	    $(document).on('click', '.do', function(ev) { 
