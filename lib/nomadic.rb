@@ -120,7 +120,8 @@ return env;
 	      <DOCTYPE html>
 		<head>
 		  <style>
-		    #i > *  { vertical-align: middle; font-size: medium; }
+#i > *  { vertical-align: middle; font-size: medium; }
+#i > button { text-align: center; }
 		    .l { left: 0; }
 		    .r { right: 0; }
 		    code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -132,7 +133,7 @@ return env;
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	    </head>
 	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
-	    <form id='form' style='width: 100vw; height: 100vh; margin: 0;'></form>
+	    <form id='form' style='position: absolute;'></form>
 	    
   <datalist id='cmds'>
     <option value='[ ] '>
@@ -144,7 +145,7 @@ return env;
   </datalist>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
-      <input form='form' id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
+      <input form='form' id='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
       <button id='do' type='button' class='material-icons do' style=''>send</button>
     </p>
     <fieldset style='height: 90%; overflow: auto;'>
