@@ -97,7 +97,7 @@ module Nomadic
         begin
           self.instance_eval %[@b = lambda { 
 env = { input: "#{i}", output: 0 }; 
-env[:output] = #{i}; 
+env[:output] = (#{i}); 
 return env; 
 };]
           o = @b.call
