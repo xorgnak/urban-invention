@@ -12,8 +12,9 @@ module Nomadic
              %[<li><code>-$100</code>Deduct $100 to your wallet.</li>],
              %[<li><code>+tag</code>Increment the "tag" counter.</li>],
              %[<li><code>-tag</code>Decrement the "tag" counter.</li>],
-             %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</p>],
-             %[<h3><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h3>],
+             %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
+             %[</ul>],
+             %[<h4><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h4>],
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>]
             ].join('')
 
