@@ -40,7 +40,7 @@ module Nomadic
     sorted_set :stat
     list :task
     list :note
-    set :tags
+    set :tag
     list :log
     def initialize u
       @id = u
@@ -54,8 +54,8 @@ module Nomadic
       self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('')
     end
     def tags *t
-      Redis.new.publish "TAGS", "#{t}"
-      self.tags.members.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}.join('')
+      [t].flatten.each {|e| self.tag << e}
+      self.tag.members.map {|e| %[<span><button class='tag_up' value='#{e}'>+</button>#{e} (#{self.stat[e]}))<button class='tag_dn' value='#{e}'>-</button></span>]}.join('')
     end
     def tasks *t
       prompt '[ ] '
@@ -108,7 +108,7 @@ module Nomadic
             self.stat.incr(m[3])
           end
         end
-        self.tags << t
+        tags t
         self.log << "##{m[4] || 'stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[m[3]]}\n> #{Time.now.utc.to_s}\n"
       else
         t = h[:form][:cmd]
