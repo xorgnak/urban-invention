@@ -8,12 +8,12 @@ module Nomadic
              %[<p>type the <code>command</code> below to run the <span class='action'>action.</p>],
              %[</div>],
              %[<ul>],
-             %[<li><code>+$100</code>Show your session settings.</li>],
-             %[<li><code>-$100</code>Show your user id.</li>],
+             %[<li><code>+$100</code>Add $100 to your wallet.</li>],
+             %[<li><code>-$100</code>Deduct $100 to your wallet.</li>],
              %[<li><code>+tag</code>Increment the "tag" counter.</li>],
              %[<li><code>-tag</code>Decrement the "tag" counter.</li>],
-             %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
-             %[</ul>],
+             %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</p>],
+             %[<h3><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h3>],
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>]
             ].join('')
 
