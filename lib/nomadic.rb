@@ -192,13 +192,13 @@ module Nomadic
 		$("#cmd").val("[X] " + $(this).val()); 
 	    });
             $(document).on('keyup', '.form', function() {
-                 var c = $("#cmd").val();  
+                 var c = $(this).val();  
                  if (c.match(/\s$/)) {
-                   $("#do").attr('color', 'orange'); 
+                   $("#do").css('color', 'orange'); 
                  } else if (c != "") {
-                   $("#do").attr('color', 'green'); 
+                   $("#do").css('color', 'green'); 
                  } else {
-                   $("#do").attr('color', 'black');
+                   $("#do").css('color', 'black');
                  }
             });
 	    $(document).on('click', '#van', function(ev) {
