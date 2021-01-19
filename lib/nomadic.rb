@@ -140,7 +140,7 @@ return env;
     <option value='id'>
     <option value='help'>
   </datalist>
-  <form style='width: 100vw; height: 100vh; margin: 0;'>
+  <form id='form' style='width: 100vw; height: 100vh; margin: 0;'>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
       <input id='cmd' list="cmds" style='width: 65%; border: thin solid black;'>
@@ -158,7 +158,7 @@ return env;
 	// turn form into json object.
 	function getForm() {
 	    var ia = {};
-	    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
+	    $.map($('#form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
 	    var dx = d;
