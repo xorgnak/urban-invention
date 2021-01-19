@@ -57,13 +57,6 @@ module Nomadic
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
       self.wal << JSON.generate(h)
     end
-    def user u
-      if /^Nx\w(10)/.match(u)
-        K.new(u)
-      else
-        self
-      end
-    end
     def id; @id; end
     def welcome; ERB.new(WELCOME).result(binding); end
     def logs;
@@ -117,9 +110,9 @@ module Nomadic
       @prompt = p[0]
     end
     def run *i
-      if user(i[0])
+      if /^Nx\d{10}/.match(i[0])
         u = i.shift
-        user(u).msg(from: @id, to: u, msg: i.join(' '))
+        K.new(u).msg(from: @id, to: u, msg: i.join(' '))
         logs
       else
         ERB.new("<%= #{[i].flatten.join(' ')} %>").result(binding)
