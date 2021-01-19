@@ -128,7 +128,7 @@ module Nomadic
         begin
           ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
           self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(#{h[:form][:do]}.to_sym, #{ar}); };])
-          o = @b.call
+          o = ERB.nmew(@b.call).result(binding)
         rescue => re
           o = re
         end
@@ -138,7 +138,7 @@ module Nomadic
       db[:attr] = self.attr.all
       db[:cmd] = t
       db[:input] = @db[:input]
-      db[:output] = ERB.new(o).result(binding);
+      db[:output] = o;
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
       return db
