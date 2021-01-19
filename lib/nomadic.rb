@@ -201,17 +201,21 @@ module Nomadic
         ERB.new(HTML).result(binding)
     }
     get('/ws') {
-      request.websocket do |ws|
-        ws.onopen do
-          ws.send("SYN")
-        end
-        ws.onmessage do |msg|
-          EM.next_tick { settings.sockets.each { |s| s.send(msg) } }
-        end
-        ws.onclose do
-          settings.sockets.delete(ws)
-        end
+      ws = Faye::WebSocket.new(env)
+      ts = Time.now.utc.to_i
+      ws.ping ts do |ev|
+        puts "works."
       end
+      ws.on :open do |ev|
+        ws.send(ev.data)
+      end
+      ws.on :message do |ev|
+        ws.send(ev.data)
+      end
+      ws.on :close do |ev|
+        ws = nil 
+      end
+      ws.rack_response
     }
     post('/') {
         content_type 'application/json';

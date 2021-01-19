@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'sinatra/base'
-require 'sinatra-websocket'
+require 'faye/websocket'
 require 'redis-objects'
 require 'json'
 #require 'paho-mqtt'
