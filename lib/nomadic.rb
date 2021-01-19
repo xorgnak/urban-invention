@@ -170,7 +170,7 @@ module Nomadic
       <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' placeholder='nomadic'>
       <button type='button' class='material-icons do' id='settings'>settings</button>
     </p> 
-    <fieldset style='height: 80%; overflow-y: scroll;'>
+    <fieldset style='height: 80%;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
