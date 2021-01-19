@@ -143,7 +143,7 @@ module Nomadic
   </datalist>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
-      <input form='form' id='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <input class='form' id='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
       <button id='do' type='button' class='material-icons do' style=''>send</button>
     </p>
     <fieldset style='height: 90%; overflow: auto;'>
@@ -159,7 +159,7 @@ module Nomadic
 	function getForm() {
 	    var ia = {};
             console.log("get", $("#form").serializeArray());
-	    $.map($('#form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
+	    $.map($('.form'), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
 	    var dx = {};
