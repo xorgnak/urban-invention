@@ -234,10 +234,11 @@ module Nomadic
                    $("#run").css('color', 'orange');
                    $('#run').prop('disabled', true); 
                  } else if (c != "") {
-                   if (c.match(/^[^\[]/)) {
+                   if (c.match(/^[^\[]\]/)) {
                      $("#tasks").css('color', 'green');    
                      $('#tasks').prop('disabled', false);
-                   } else {
+                   } 
+                   if (c.match(/[^\.]/)) {
                      $("#run").css('color', 'green');
                      $('#run').prop('disabled', false);                    
                    }
