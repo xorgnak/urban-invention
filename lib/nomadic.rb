@@ -58,7 +58,7 @@ module Nomadic
       @db.each_pair {|k,v| self.attr[k] = v }
     end
     def html
-      Kramdown::Document.new(self.attr['md']).to_html
+      Kramdown::Document.new(self..md.value).to_html
     end
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
       self.wal << JSON.generate(h)
@@ -164,7 +164,7 @@ module Nomadic
         self.md.value = h[:form][:editor]
       else
         if h[:form][:editor] != nil
-          db[:md] = h[:form][:editor]
+          self.md.value = h[:form][:editor]
         end
         t = h[:form][:cmd]
         db[:stat] = self.stat.members(with_scores: true).to_h
