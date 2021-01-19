@@ -151,7 +151,7 @@ module Nomadic
 		return function(msg){ $('#output').innerHTML = msg; }
 	    }(document.getElementById(''));
 
-	    var ws       = new WebSocket('wss://vango.me');
+	    var ws       = new WebSocket('wss://vango.me/ws');
 	    ws.onopen    = function()  { show('websocket opened'); };
 	    ws.onclose   = function()  { show('websocket closed'); }
 	    ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
@@ -198,19 +198,18 @@ module Nomadic
       puts "#{request.request_method} #{request.fullpath} #{params}"
     end
     get('/') {
-      if !request.websocket?
         ERB.new(HTML).result(binding)
-      else
-        request.websocket do |ws|
-          ws.onopen do
-            ws.send("SYN")
-          end
-          ws.onmessage do |msg|
-            EM.next_tick { settings.sockets.each { |s| s.send(msg) } }
-          end
-          ws.onclose do
-            settings.sockets.delete(ws)
-          end
+    }
+    get('/ws') {
+      request.websocket do |ws|
+        ws.onopen do
+          ws.send("SYN")
+        end
+        ws.onmessage do |msg|
+          EM.next_tick { settings.sockets.each { |s| s.send(msg) } }
+        end
+        ws.onclose do
+          settings.sockets.delete(ws)
         end
       end
     }
