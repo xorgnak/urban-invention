@@ -147,7 +147,7 @@ module Nomadic
   </datalist>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
-      <input class='form' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <input class='form' id='cmd' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
       <button id='do' type='button' class='material-icons do' style=''>send</button>
     </p>
     <fieldset style='height: 90%; overflow: auto;'>
