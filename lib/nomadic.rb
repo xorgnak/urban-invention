@@ -212,7 +212,9 @@ module Nomadic
                     $("#b").val(dd.input);
 		}
                 $("#tasks").css('color', 'black');
+                $('#tasks').attr('disabled', 'true'); 
                 $("#run").css('color', 'black');
+                $('#run').attr('disabled', 'true'); 
             });
 	}
 	
@@ -223,21 +225,24 @@ module Nomadic
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
 		$("#b_c").val("[X] " + $(this).val());
-                $("#run").css('color', 'red'); 
+                $("#run").css('color', 'red');
+                $('#run').attr('disabled', 'false'); 
 	    });
             $(document).on('keyup', '.form', function() {
                  var c = $(this).val();  
                  if (c.match(/ $/)) {
                    $("#run").css('color', 'orange');
-                 } else if (c != "") {
+                   $('#run').attr('disabled', 'true'); 
+                 } else if (c != "" && c.match(/^[^\[]/)) {
                    $("#run").css('color', 'green'); 
+                   $('#run').attr('disabled', 'false');
+                   $("#tasks").css('color', 'green');                                                                                   
+                   $('#tasks').attr('disabled', 'false');
                  } else {
                    $("#run").css('color', 'black');
-                 }
-                 if (c.match(/^[^\[]/)) { 
-                   $("#tasks").css('color', 'green');
-                 } else {
-                   $("#tasks").css('glass', 'black');
+                   $('#run').attr('disabled', 'true'); 
+                   $("#tasks").css('glass', 'black');                                                                                                      
+                   $('#tasks').attr('disabled', 'true'); 
                  }
             });
 	    $(document).on('click', '.do', function(ev) { 
