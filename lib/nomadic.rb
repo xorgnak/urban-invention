@@ -146,14 +146,19 @@ module Nomadic
     <option value='help'>
   </datalist>
     <p id='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button id='van' value='go' type='button' class='material-icons do' style=''>airport_shuttle</button> 
-      <input class='form' id='cmd' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
-      <button id='do' type='button' class='material-icons do' style=''>send</button>
+      <button id='t_l' type='button' class='material-icons do' style='van'>airport_shuttle</button> 
+      <input class='form' id='t' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <button id='b_l' type='button' class='material-icons do' value='scan'>qr_code_scanner</button>
     </p>
     <fieldset style='height: 90%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
+   <p id='i' style='width: 100%; text-align: center; margin: 0;'>                                                                                          
+      <button id='b_l' type='button' class='material-icons do' value='menu'>menu</button>                                                
+      <input class='form' id='b' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <button id='exe' type='button' class='material-icons do' value='send'>send</button>
+    </p> 
   </form>
   <script>
     // get unique id OR use one passed in.
@@ -165,7 +170,7 @@ module Nomadic
             console.log("get", $("#form").serializeArray());
 	    $.map($('.form'), function(n, i) { ia[$(n).attr('name')] = $(n).val(); }); return ia;
 	}
-	function sendForm(th) {
+	function sendForm() {
 	    var dx = {};
 	    Object.assign(dx, d);
 	    dx.trigger = th;
@@ -177,8 +182,8 @@ module Nomadic
 		$("#input").html(dd.cmd); 
 		$("#output").html(dd.output);
 		$("#form")[0].reset();
-		if ( $("#cmd").val() == '' ) {
-                    $("#cmd").val(dd.input);
+		if ( $("#b").val() == '' ) {
+                    $("#b").val(dd.input);
 		}
             });
 	}
@@ -201,14 +206,9 @@ module Nomadic
                    $("#do").css('color', 'black');
                  }
             });
-	    $(document).on('click', '#van', function(ev) {
-		ev.preventDefault();
-                sendForm('van');
-		// get lat/lon
-	    });
 	    $(document).on('click', '.do', function(ev) { 
 		ev.preventDefault(); 
-		sendForm($(this).attr('id'));
+		sendForm($(this).attr('value'));
 	    });
 	});
 	</script>
