@@ -228,7 +228,7 @@ module Nomadic
                  var c = $(this).val();  
                  if (c.match(/ $/)) {
                    $("#run").css('color', 'orange');
-                 } else if (!c.match(/^\[/)) {
+                 } else if (c.match(/^[^\[/])) {
                    $("#tasks").css('color', 'green');
                  } else if (c != "") {
                    $("#run").css('color', 'green'); 
