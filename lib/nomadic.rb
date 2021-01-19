@@ -53,7 +53,8 @@ module Nomadic
     def logs
       self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('')
     end
-    def tags
+    def tags *t
+      puts "TAGS #{t}"
       m = self.tags.members.to_a
       m.delete("wallet")
       mw = %[<span><button class='tag' value='wallet'>$#{self.stat['wallet']}</button>#{e}</span>] 
