@@ -192,10 +192,9 @@ module Nomadic
       set :bind, '0.0.0.0'
       set :port, 8080
       set :server, 'thin'
-      set :sockets, []
     end
     before do
-      puts "#{request.request_method} #{request.fullpath} #{params}"
+      Redis.new.publish "App.#{request.request_method}", "#{request.fullpath} #{params}"
     end
     get('/') {
         ERB.new(HTML).result(binding)
