@@ -209,6 +209,7 @@ module Nomadic
 	    $.map($('.form'), function(n, i) { ia[$(n).attr('name')] = $(n).val(); }); return ia;
 	}
 	function sendForm(th) {
+            $("#run").css('color', 'blue');
 	    var dx = {};
 	    Object.assign(dx, d);
 	    dx.trigger = th;
@@ -223,6 +224,7 @@ module Nomadic
 		if ( $("#b").val() == '' ) {
                     $("#b").val(dd.input);
 		}
+                $("#run").css('color', 'black');
             });
 	}
 	
