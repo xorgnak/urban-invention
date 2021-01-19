@@ -68,7 +68,7 @@ module Nomadic
     def id; @id; end
     def welcome; ERB.new(WELCOME).result(binding); end
     def logs;
-      x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join('\n')
+      x = self.log.to_a.reverse.map { |e| %[#{e}] }.join('\n')
       %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>];
     end
     def edit
