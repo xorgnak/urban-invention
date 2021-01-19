@@ -82,49 +82,43 @@ module Nomadic
     def prompt *p
       @prompt = p[0]
     end
-    def << i
+    def << h
       db = {}
       @pr = ''
-      if m = /^\[\s\]\s?(.*)?/.match(i)
+      if m = /^\[\s\]\s?(.*)?/.match(h[:form][:cmd])
         t = 'tasks'
         if m[1] != nil && m[1] != ''
           self.task << m[1]
           self.log << "created task: #{m[1]} at #{Time.now.utc.to_s}"
         end
         o = tasks
-      elsif m = /^\[X\]\s(.*)/.match(i)
+      elsif m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
         t = "tasks"
         self.task.delete(m[1])
         self.log << "finished task: #{m[1]} at #{Time.now.utc.to_s}"
         o = tasks
-      elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)$/.match(i)
-        md = m[4].gsub(/^\s/, '');
+      elsif m = /^([\+\-])(\$)?(.\w+)(\s.*)$/.match(h[:form][:cmd])
+        a = 1
         if m[2] == '$'
+          t = "wallet"
+          a = m[3].to_i
           if m[1] == '-'
-            self.stat.decr('wallet', m[3].to_i)
+            self.stat.decr('wallet', a)
           else
-            self.stat.incr('wallet', m[3].to_i)
-          end
-          if md != ''
-            self.log << "wallet: #{m[1]}$#{m[3]} for #{m[4]} at #{Time.now.utc.to_s}"
-          else
-            self.log << "wallet: #{m[1]}$#{m[3]} at #{Time.now.utc.to_s}"
+            self.stat.incr('wallet', a)
           end
         else
+          t = m[3]
           if m[1] == '-'
             self.stat.decr(m[3])
           else
             self.stat.incr(m[3])
           end
-          if md != ''
-            self.log << "#{m[3]}: #{m[1]}1 for #{m[4]} at #{Time.now.utc.to_s}"
-          else
-            self.log << "#{m[3]}: #{m[1]}1 at #{Time.now.utc.to_s}"
-          end
         end
-      elsif m = /^@(.+)\s(.*)/.match(i)
+        self.log << "#{t}: #{m[1]}#{a} #{m[4].gsub(/^\s/, '').gsub(/$/, ' ')}at #{Time.now.utc.to_s}"
+      elsif m = /^@(.+)\s(.*)/.match(h[:form][:cmd])
         puts ""
-      elsif m = /^#(.+)\s(.*)/.match(i)
+      elsif m = /^#(.+)\s(.*)/.match(h[:form][:cmd])
         puts ""
       else
         t = i
@@ -273,7 +267,7 @@ module Nomadic
     }
     post('/') {
         content_type 'application/json';
-        e = @vm[params[:id]] << params[:form][:cmd]
+        e = @vm[params[:id]] << params
         return JSON.generate(e)
     }
     not_found do
