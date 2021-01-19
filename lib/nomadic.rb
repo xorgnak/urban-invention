@@ -82,8 +82,8 @@ module Nomadic
     def prompt *p
       @prompt = p[0]
     end
-    def run d, c, m
-      
+    def run i
+      ERB.new("<%= #{i} %>").result(binding)
     end
     def << h
       db = {}
@@ -127,8 +127,8 @@ module Nomadic
         t = h[:form][:cmd]
         begin
           ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
-          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(#{h[:form][:do]}.to_sym, #{ar}); };])
-          o = ERB.nmew(@b.call).result(binding)
+          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(#{h[:form][:do]}.to_sym, "#{h[:form][:cmd]}"); };])
+          o = @b.call
         rescue => re
           o = re
         end
@@ -189,7 +189,7 @@ module Nomadic
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button id='b_l' type='button' class='material-icons do form' name='do' value='tasks'>check_box_outline_blank</button>
       <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;' placeholder='try me out...'>
-      <button id='b_r' type='button' class='material-icons do form' name='do' value='send'>send</button>
+      <button id='b_r' type='button' class='material-icons do form' name='do' value='run'>send</button>
     </p> 
   </form>
   <script>
