@@ -169,9 +169,9 @@ module Nomadic
     <option value='#'>
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button type='button' class='material-icons do' id='welcome'>airport_shuttle</button> 
+      <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
       <button type='button' class='do' id='tags' style='width: 65%;'>nomadic</button>
-      <button type='button' class='material-icons do' id='settings'>settings</button>
+      <button type='button' class='material-icons do' id='settings'>notes</button>
     </p> 
     <fieldset style='height: 80%;'>
       <legend id='input'>welcome</legend>
