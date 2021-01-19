@@ -137,7 +137,7 @@ module Nomadic
 	    </head>
 	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
 	    <form id='form' style='margin: 0, padding: 0;'>
-  <datalist id='cmds'>                                                                                                                                     
+  <datalist id='cats'>                                                                                                                                     
     <option value='tasks'>                                                                                                                                 
     <option value='profile'>                                                                                                                              
     <option value='settings'>
