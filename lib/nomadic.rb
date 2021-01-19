@@ -123,8 +123,8 @@ module Nomadic
 	      <DOCTYPE html>
 		<head>
 		  <style>
-#i > *  { vertical-align: middle; font-size: medium; }
-#i > button { text-align: center; }
+.i > *  { vertical-align: middle; font-size: medium; }
+.i > button { text-align: center; }
 		    .l { left: 0; }
 		    .r { right: 0; }
 		    code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -145,18 +145,18 @@ module Nomadic
     <option value='logs'>
     <option value='help'>
   </datalist>
-    <p id='i' style='width: 100%; text-align: center; margin: 0;'>
+    <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='t_l' type='button' class='material-icons do' style='van'>airport_shuttle</button> 
-      <input class='form' id='t' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <input class='form' id='t_c' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
       <button id='b_l' type='button' class='material-icons do' value='scan'>qr_code_scanner</button>
     </p>
     <fieldset style='height: 90%; overflow: auto;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
-   <p id='i' style='width: 100%; text-align: center; margin: 0;'>                                                                                          
+   <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button id='b_l' type='button' class='material-icons do' value='menu'>menu</button>                                                
-      <input class='form' id='b' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
+      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 60%; border: thin solid black;'>
       <button id='exe' type='button' class='material-icons do' value='send'>send</button>
     </p> 
   </form>
