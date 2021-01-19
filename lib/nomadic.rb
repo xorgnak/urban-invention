@@ -152,7 +152,7 @@ module Nomadic
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button id='t_l' type='button' class='material-icons do form' value='send'>check_box_outline_blank</button> 
-      <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;'>
+      <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;' value='nomadic'>
       <button id='t_r' type='button' class='material-icons do form' value='send'>check_box_outline_blank</button>
     </p>
     <fieldset id='edit' style='height: 80%; overflow-y: scroll; display: none;'>
@@ -165,7 +165,7 @@ module Nomadic
     </fieldset>
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button id='b_l' type='button' class='material-icons do form' value='send'>check_box_outline_blank</button>
-      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;'>
+      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;' placeholder='try me out...'>
       <button id='b_r' type='button' class='material-icons do form' value='send'>check_box_outline_blank</button>
     </p> 
   </form>
