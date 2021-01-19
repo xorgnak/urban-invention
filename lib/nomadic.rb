@@ -124,6 +124,9 @@ module Nomadic
       end
     end
     def << h
+      if h[:form][:edit]
+        self.md.value = h[:form][:edit]
+      end
       db = {}
       @pr = ''
       if m = /^\[\]\s(.*)/.match(h[:form][:cmd])
