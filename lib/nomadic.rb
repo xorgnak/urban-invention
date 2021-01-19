@@ -3,8 +3,8 @@ module Nomadic
   autoload :VERSION, "nomadic/version"
   
   WELCOME = [%[<div style='text-align: center;'>],
-             %[<h4><span class='material-icons' style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 200%;'>directions_walk</span>simple. flexible. tools.</h4>],
-             %[<h2 class='help'>Remain Calm.</h2>],
+             %[<span class='l'><span class='material-icons' style='padding: 2%; background-color: black; color: white; border-radius: 10px; font-size: 200%;'>directions_walk</span></span><span class'r'><h4>simple. flexible. tools.</h4>],
+             %[<h2 class='help'>Remain Calm.</h2></span>],
              %[<p>type the <code>command</code> below to run the <span class='action'>action.</p>],
              %[</div>],
              %[<ul>],
