@@ -95,11 +95,7 @@ module Nomadic
       else
         t = i
         begin
-          self.instance_eval %[@b = lambda { 
-env = { input: "#{i}", output: 0 }; 
-env[:output] = (#{i}); 
-return env; 
-};]
+self.instance_eval %[@b = lambda { "#{i}" };]
           o = @b.call
         rescue => re
           o = re
@@ -110,7 +106,8 @@ return env;
       db[:attr] = self.attr.all
       db[:cmd] = t
       db[:result] = o;
-      @db = db
+@db = db
+Redis.new.publish("vm.#{@id}", #{})
       return db
     end
   end 
