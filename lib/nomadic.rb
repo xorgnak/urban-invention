@@ -160,7 +160,13 @@ module Nomadic
       elsif h[:form][:editor] != nil && h[:trigger] == "save"
         self.md.value = h[:form][:editor]
       else
+        if h[:form][:editor] != nil
+          self.md.value = h[:form][:editor]
+        end
         t = h[:form][:cmd]
+        db[:stat] = self.stat.members(with_scores: true).to_h
+        db[:attr] = self.attr.all
+        db[:cmd] = t
         begin
           ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
           if t.split(' ').length > 0
@@ -175,15 +181,12 @@ module Nomadic
         end
         self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n"
       end
-      db[:stat] = self.stat.members(with_scores: true).to_h
-      db[:attr] = self.attr.all
-      db[:cmd] = t
-      db[:input] = @db[:input]
+      db[:input] = @prompt
       db[:output] = o;
       @db = db
       Redis.new.publish("vm.#{@id}", "#{@db}")
       prompt
-      return db
+      return @db
     end
   end 
   
