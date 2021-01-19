@@ -142,7 +142,7 @@ module Nomadic
 	// sends a message over mqtt
 	function sendForm(th) {
             var d = { id: id, trigger: th, form: getForm() };
-            ws.send(JSON.stringify(d));
+            jQuery.post('/', d);
 	}
 
 
