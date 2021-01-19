@@ -124,9 +124,9 @@ module Nomadic
       elsif m = /^#(.+)\s(.*)/.match(h[:form][:cmd])
         puts ""
       else
-        t = i
+        t = h[:form][:cmd]
         begin
-          ar = h[:form][:cmd].split(' ').map { |e| "\"#{e}\"" }.join(', ')
+          ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
           self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(#{h[:form][:do]}.to_sym, #{ar}); };])
           o = @b.call
         rescue => re
