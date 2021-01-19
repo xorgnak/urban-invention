@@ -160,14 +160,16 @@ return env;
 	// turn form into json object.
 	function getForm() {
 	    var ia = {};
-	    $.map($('#form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
+	    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
 	function sendForm(th) {
 	    var dx = {};
 	    Object.assign(dx, d);
 	    dx.trigger = th;
 	    dx.form = getForm();
+	    console.log("send", dx);
             jQuery.post('/', dx, function(dd) {
+		console.log("got", dd);
 		d.time = dd.timestamp;
 		$("#input").html(dd.cmd); 
 		$("#output").html(dd.result.output);
