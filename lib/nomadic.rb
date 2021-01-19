@@ -193,7 +193,7 @@ module Nomadic
 	    });
             $(document).on('keyup', '.form', function() {
                  var c = $(this).val();  
-                 if (c.match(/\s$/)) {
+                 if (c.match(/ $/)) {
                    $("#do").css('color', 'orange'); 
                  } else if (c != "") {
                    $("#do").css('color', 'green'); 
