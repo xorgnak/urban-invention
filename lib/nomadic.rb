@@ -79,8 +79,8 @@ module Nomadic
         "done!"
       end
     end
-    def prompt p
-      @prompt = p
+    def prompt *p
+      @prompt = p[0]
     end
     def << i
       db = {}
