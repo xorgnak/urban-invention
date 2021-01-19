@@ -322,7 +322,7 @@ module Nomadic
     end
     helpers do
       def rand_id
-        a = ['Nx']; 10.times { a << rand(16).to_s(16) }; return a.join('')
+        a = ['Nx000']; 7.times { a << rand(16).to_s(16) }; return a.join('')
       end
     end
     configure do
