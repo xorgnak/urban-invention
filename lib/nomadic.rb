@@ -127,7 +127,7 @@ module Nomadic
         t = h[:form][:cmd]
         begin
           ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
-          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(#{h[:trigger]}.to_sym, "#{h[:form][:cmd]}"); };])
+          self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(:'#{h[:trigger] || "run"}', "#{h[:form][:cmd]}"); };])
           o = @b.call
         rescue => re
           o = re
