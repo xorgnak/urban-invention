@@ -111,7 +111,7 @@ module Nomadic
             self.stat.incr(m[3])
           end
         end
-        tags t.split(" ")[0]
+        self.tag << t.split(" ")[0]
         self.log << "##{m[4] || 'stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[m[3]]}\n> #{Time.now.utc.to_s}\n"
       else
         t = h[:form][:cmd]
