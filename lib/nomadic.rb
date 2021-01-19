@@ -151,7 +151,7 @@ module Nomadic
 		return function(msg){ el.innerHTML = msg; }
 	    }(document.getElementById(''));
 
-	    var ws       = new WebSocket('ws://vango.me');
+	    var ws       = new WebSocket('wss://vango.me');
 	    ws.onopen    = function()  { show('websocket opened'); };
 	    ws.onclose   = function()  { show('websocket closed'); }
 	    ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
