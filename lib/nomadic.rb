@@ -160,19 +160,20 @@ return env;
 	    var ia = {};
 	    $.map($('form').serializeArray(), function(n, i) { ia[n['name']] = n['value']; }); return ia;
 	}
-	// sends a message over mqtt
 	function sendForm(th) {
             var d = { id: id, trigger: th, form: getForm() };
             jQuery.post('/', d, function(dd) { 
               $("#input").html(dd.cmd); 
               $("#output").html(dd.result.output);
-              $("#cmd").val(dd.result.input);
+              if ( $("#cmd").val() == '' ) {
+                $("#cmd").val(dd.result.input);
+              }
             });
 	}
 
 
 	$(function() {
-            setInterval(function() { if ( $().val() != '' ) { sendForm('ping'); } }, 10000);	    	
+            setInterval(function() { sendForm('ping'); }, 10000);	    	
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); $("#exe").click(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
