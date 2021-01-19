@@ -74,7 +74,7 @@ module Nomadic
       @prompt = p[0]
     end
     def run i
-      "<%= #{i} %>"
+      "#{i.join(' ')}"
     end
     def << h
       db = {}
@@ -119,7 +119,7 @@ module Nomadic
             arr = ''
           end
           self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(:'#{h[:trigger]}'#{arr}); };])
-          o = ERB.new(@b.call).result(binding)
+          o = @b.call
         rescue => re
           o = re
         end
