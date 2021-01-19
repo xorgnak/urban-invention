@@ -234,18 +234,26 @@ module Nomadic
                    $("#run").css('color', 'orange');
                    $('#run').prop('disabled', true); 
                  } else if (c != "") {
-                   if (c.match(/^[^\[]/)) {
-                     $("#tasks").css('color', 'green');    
-                     $('#tasks').prop('disabled', false);
+                   if (c.match(/^[\[]/)) {
+                     $("#tasks").css('color', 'black');
+                     $('#tasks').prop('disabled', true);
+                   } else {
+                     $("#tasks").css('color', 'green');
+                     $('#tasks').prop('disabled', flase); 
                    } 
                    if (c.match(/[^\.]/)) {
                      $("#run").css('color', 'green');
                      $('#run').prop('disabled', false);                    
                    } else {
+                     $("#run").css('color', 'black');
+                     $('#run').prop('disabled', true); 
+                     $("#tasks").css('color', 'green');                                                                               
+                     $('#tasks').prop('disabled', flase); 
+                   }
                  } else {
                    $("#run").css('color', 'black');
                    $('#run').prop('disabled', true); 
-                   $("#tasks").css('glass', 'black');                                                                                                      
+                   $("#tasks").css('color', 'black');                                                                                                      
                    $('#tasks').prop('disabled', true); 
                  }
             });
