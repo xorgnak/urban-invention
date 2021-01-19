@@ -191,7 +191,7 @@ module Nomadic
     def initialize()
       super()
       @vm = Hash.new { |h,k| h[k] = K.new(k) }
-      @metrics = Hash.new { |h,k| h[k] = Metrics.new(k) }
+      @metrics = Hash.new { |h,k| h[k] = Metric.new(k) }
     end
     helpers do
       def rand_id
