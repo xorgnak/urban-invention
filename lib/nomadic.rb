@@ -13,6 +13,7 @@ module Nomadic
              %[<li><code>2 + 2</code>Simple math using the +,-,*,/,**, and () operators, etc.</li>],
              %[</ul>],
              %[<h4><button class='material-icons' style='padding: 0;'disabled>check_box_outline_blank</button>creates a new task.</h4>],
+             %[<p>your profile id:</p><p><a style='color: black; text-decoration: none;' href='https://vango.me/<%= id %>'><code><%= id %></code></a></p>],
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
              %[</div>]
             ].join('')
@@ -326,7 +327,7 @@ module Nomadic
     end
     helpers do
       def rand_id
-        a = []; 16.times { a << rand(16).to_s(16) }; return a.join('')
+        a = ['Nx']; 10.times { a << rand(16).to_s(16) }; return a.join('')
       end
     end
     configure do
