@@ -170,17 +170,20 @@ module Nomadic
 		ev.preventDefault(); 
 		$("#cmd").val("[X] " + $(this).val()); 
 	    });
-	    $(document).on('click', '#add', function(ev) {
+	    $(document).on('click', '#van', function(ev) {
 		ev.preventDefault();
-		$("#adds").toggle();
+                sendForm('van');
+		// get lat/lon
+                // convert to gridsquare
+                // set to #cmd.
 	    });
 	    $(document).on('click', '.do', function(ev) { 
 		ev.preventDefault(); 
-		sendForm($(this));
+		sendForm($(this).attr('id'));
 	    });
 	    $(document).on('click', "#do", function(ev) { 
 		ev.preventDefault();
-		sendForm($(this));
+		sendForm('do');
 		$("form").reset();	
 	    });
 	});
