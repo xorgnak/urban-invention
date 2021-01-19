@@ -151,16 +151,16 @@ module Nomadic
     <option value='#'>
   </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button id='t_l' type='button' class='material-icons do form' value='van'>airport_shuttle</button> 
+      <button id='t_l' type='button' class='material-icons do form' name='do' value='van'>airport_shuttle</button> 
       <input class='form' id='t_c' name='cat' list="cats" style='width: 65%; text-align: center;'>
-      <button id='b_l' type='button' class='material-icons do form' value='scan'>qr_code_scanner</button>
+      <button id='b_l' type='button' class='material-icons do form' name='do' value='scan'>qr_code_scanner</button>
     </p>
     <fieldset style='height: 80%; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
-      <button id='b_l' type='button' class='material-icons do form' value='menu'>menu</button>                                                
+      <button id='b_l' type='button' class='material-icons do form' name='do' value='menu'>menu</button>                                                
       <input class='form' id='b_c' name='cmd' list="cmds" style='width: 65%;'>
       <button id='exe' type='button' class='material-icons do form' value='send'>send</button>
     </p> 
