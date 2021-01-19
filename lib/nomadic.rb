@@ -148,7 +148,7 @@ module Nomadic
 
 	$(function() {
 	    var show = function(el){
-		return function(msg){ el.innerHTML = msg; }
+		return function(msg){ $('#output').innerHTML = msg; }
 	    }(document.getElementById(''));
 
 	    var ws       = new WebSocket('wss://vango.me');
