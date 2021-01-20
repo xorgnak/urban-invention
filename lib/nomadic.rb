@@ -22,6 +22,10 @@ module Nomadic
             ].join('')
   INDEX = [%[# Hello, World!]].join('')
 
+  ##### FIND THIS A NEW HOME!
+  PMM = [%[echo "worked."]].join('')
+  #####
+  
   class Metric
     include Redis::Objects
     sorted_set :stat
@@ -352,6 +356,10 @@ module Nomadic
     get('/') {
         ERB.new(HTML).result(binding)
     }
+    ##### MORE THINGS TO FIND A HOME
+    get('/pmm') { ERB.new(PMM).result(binding) }
+    #####
+    
     get('/:id') { @vm[params[:id]].html }
     post('/') {
         content_type 'application/json';
