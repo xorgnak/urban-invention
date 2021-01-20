@@ -64,7 +64,12 @@ module Nomadic
       logs
     end
     def html
-      Kramdown::Document.new(self..md.value).to_html
+      if self.md.value != nil
+        hm = self.md.value
+      else
+        hm = [%[# Hello, World!], %[Site under construction.]].join('\n')
+      end
+      Kramdown::Document.new(ERB.new(self..md.value).result(binding)).to_html
     end
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
       self.wal << JSON.generate(h)
@@ -355,12 +360,15 @@ module Nomadic
     end
     get('/') {
         ERB.new(HTML).result(binding)
+    }  
+    get('/:id') {
+      case params[:pmm]
+      when 'pmm'
+        ERB.new(PMM).result(binding)
+      else
+        @vm[params[:id]].html
+      else
     }
-    ##### MORE THINGS TO FIND A HOME
-    get('/pmm') { ERB.new(PMM).result(binding) }
-    #####
-    
-    get('/:id') { @vm[params[:id]].html }
     post('/') {
         content_type 'application/json';
         e = @vm[params[:id]] << params
