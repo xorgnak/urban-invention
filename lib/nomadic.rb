@@ -69,7 +69,7 @@ module Nomadic
       else
         hm = [%[# Hello, World!], %[Site under construction.]].join('\n')
       end
-      Kramdown::Document.new(ERB.new(self..md.value).result(binding)).to_html
+      Kramdown::Document.new(ERB.new(self.md.value).result(binding)).to_html
     end
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
       self.wal << JSON.generate(h)
