@@ -367,7 +367,7 @@ module Nomadic
         ERB.new(PMM).result(binding)
       else
         @vm[params[:id]].html
-      else
+      end
     }
     post('/') {
         content_type 'application/json';
