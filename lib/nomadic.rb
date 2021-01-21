@@ -23,7 +23,19 @@ module Nomadic
   INDEX = [%[# Hello, World!]].join('')
 
   ##### FIND THIS A NEW HOME!
-  PMM = [%[echo "worked."]].join('')
+  PMM = %[
+echo "OS RELEASE:"
+cat /etc/os-release
+source /etc/os-release
+
+if [ -z "$NAME" ]; then
+    export SYS=$NAME
+else
+    export SYS=$ID
+fi
+
+echo "SYSTEM: $SYS"
+]
   #####
   
   class Metric
