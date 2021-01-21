@@ -30,7 +30,7 @@ if [ -z "$NAME" ]; then
 else
     export SYS=$ID;
 fi
-if [ "$SYS" == "debian" ]; then
+if [ "$SYS" == "debian" || "$SYS" == "ubuntu" ]; then
     export PM='apt -y';
 elif [ "$SYS" == "fedora" ]; then
     export PM='yum -y';
