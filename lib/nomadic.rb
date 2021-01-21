@@ -25,12 +25,20 @@ module Nomadic
   ##### FIND THIS A NEW HOME!
   PMM = %[
 source /etc/os-release
-if [ -z "$NAME" ]; then; export SYS=$NAME; else; export SYS=$ID; fi;
+if [ -z "$NAME" ]; then
+    export SYS=$NAME;
+else
+    export SYS=$ID;
+fi
 if [ "$SYS" == "debian" ]; then
     export PM=apt;
 elif [ "$SYS" == "fedora" ]; then
     export PM=yum;
 fi
+echo "PM: $PM"
+sudo $PM update
+sudo $PM upgrade
+sudo $PM install git
 ]
   #####
   
