@@ -33,6 +33,7 @@ else echo "no release ID." && exit
  fi
 echo "PM: $PM"; sudo $PM update && sudo $PM upgrade sudo $PM install git
 git clone https://github.com/xorgnak/turbo-rotary-phone && mv turbo-rotary-phone pmm
+cd pmm && chmod +x install.sh && ./install.sh
 ]
   #####
   
