@@ -362,7 +362,7 @@ module Nomadic
         ERB.new(HTML).result(binding)
     }  
     get('/:id') {
-      case params[:pmm]
+      case params[:id]
       when 'pmm'
         ERB.new(PMM).result(binding)
       else
