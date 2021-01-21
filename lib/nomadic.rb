@@ -24,17 +24,13 @@ module Nomadic
 
   ##### FIND THIS A NEW HOME!
   PMM = %[
-echo "OS RELEASE:"
-cat /etc/os-release
 source /etc/os-release
-
-if [ -z "$NAME" ]; then
-    export SYS=$NAME
-else
-    export SYS=$ID
+if [ -z "$NAME" ]; then; export SYS=$NAME; else; export SYS=$ID; fi;
+if [ "$SYS" == "debian" ]; then
+    export PM=apt;
+elif [ "$SYS" == "fedora" ]; then
+    export PM=yum;
 fi
-
-echo "SYSTEM: $SYS"
 ]
   #####
   
