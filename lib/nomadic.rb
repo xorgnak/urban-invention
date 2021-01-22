@@ -1,5 +1,5 @@
 module Nomadic
-
+  load "nomadic/db.rb"
   autoload :VERSION, "nomadic/version"
   
   WELCOME = [%[<div style='text-align: center;'>],
@@ -20,8 +20,38 @@ module Nomadic
              %[<p>lovingly crafted by <a href='https://github.com/xorgnak'>this</a> guy.</p>],
              %[</div>]
             ].join('')
-  INDEX = [%[# Hello, World!]].join('')
-
+  HEAD = [%[<!DOCTYPE html><head><style>],
+          %[html { background-color: <%= @me[:base] %>; color: <%= @me[:foreground] %>; text-align: center; }],
+          %[h1 {border: thin solid <%= @me[:accent] || 'red' %>; background-color: <%= @me[:background] %>;],
+          %[border-radius: <%= @me[:radius] %>px; margin: 0; padding: 1%; }],
+          %[p { border: thin solid <%= @me[:text] || 'blue'  %>; background-color: <%= @me[:background] %>; }],
+          %[blockquote > p { border: thin solid <%= @me[:quote] || 'green' %>; padding: 1%; ackground-color: <%= @me[:background] %>; }],
+          %[p { padding: 1%; border-radius: <%= @me[:radius] || 0 %>px; background-color: <%= @me[:background] %>; }],
+          %[img { width: 100%; background-color: <%= @me[:background] %>; }],
+          %[</style></head><body>]
+         ].join("")
+  INDEX = [%[![my pic](<%= @me[:image] %>)],
+           %[# <%= @me[:pitch] || 'Welcome!' %>\n] ,
+           %[[<%= @me[:nick] || 'New User' %>](<%= @me[:homepage] %>)],
+           %[> <%= @me[:desc] || 'Everyone say hello.' %>\n],
+          ].join("\n")
+  BASIC = {
+    nick: "New User",
+    phone: "1235551212",
+    homepage: "https://vango.me",
+    email: "user@vango.me",
+    pitch: "I am a new user.",
+    desc: "Welcome me.",
+    image: "https://cdn.stocksnap.io/img-thumbs/960w/city-park_02TZKW7RZ5.jpg",
+    base: 'black',
+    background: 'white',
+    foreground: 'black',
+    accent: "red",
+    text: "green",
+    quote: "blue",
+    radius: 10
+  }.to_yaml
+  
   ##### FIND THIS A NEW HOME!
   PMM = %[
 source /etc/os-release
@@ -59,6 +89,7 @@ cd pmm && chmod +x install.sh && ./install.sh
     hash_key :attr
     sorted_set :stat
     value :md
+    value :yaml
     list :wal
     list :task
     list :note
@@ -69,19 +100,32 @@ cd pmm && chmod +x install.sh && ./install.sh
       @prompt = ""
       @db = {}
     end
+    def macro s
+      /:\w+\s/m.match(s).each { |e| @s.gsub(/ :#{e} /, %[<%= @me[:#{e}] %>]) }
+      return s
+    end
     def save
       @db.each_pair {|k,v| self.attr[k] = v }
       self.log << "# profile saved\n> #{Time.now.utc.to_s}"
       logs
     end
+    def history
+      self.log.to_a.reverse.join("\n")
+    end
     def html
       if self.md.value != nil
         hm = self.md.value
       else
-        hm = [%[# Hello, World!], %[Site under construction.]].join('\n')
+        hm = INDEX
       end
-      Kramdown::Document.new(ERB.new(hm).result(binding)).to_html
+      @me = YAML.load(self.yaml.value)
+      [
+        ERB.new(HEAD).result(binding),
+        Kramdown::Document.new(ERB.new(hm).result(binding)).to_html,
+        "</body></html>"
+      ].flatten.join('')
     end
+    
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
       self.wal << JSON.generate(h)
     end
@@ -89,10 +133,10 @@ cd pmm && chmod +x install.sh && ./install.sh
     def welcome; ERB.new(WELCOME).result(binding); end
     def logs;
       x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join("\n")
-      %[<textarea name='settings' style='width: 100%; height: 100%;'>#{x}</textarea>];
+      %[<textarea name='logs' style='width: 100%; height: 100%;'>#{x}</textarea>];
     end
     def edit
-      %[<textarea name='editor' class='form' style='width: 100%; height: 100%;'>#{self.md.value || INDEX}</textarea>];
+      %[<textarea name='settings' class='form' style='width: 100%; height: 30%;'>#{self.yaml.value || BASIC}</textarea><textarea name='editor' class='form' style='width: 100%; height: 70%;'>#{self.md.value || INDEX}</textarea>];
     end
     def wall;
       w = self.wal.to_a.reverse.map { |e|
@@ -181,12 +225,11 @@ cd pmm && chmod +x install.sh && ./install.sh
           end
         end
         self.tag << t
-        self.log << "##{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
-      elsif h[:form][:editor] != nil && h[:trigger] == "save"
-        self.md.value = h[:form][:editor]
+        self.log << "# #{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
       else
-        if h[:form][:editor] != nil
+        if h[:form][:cmd] == "save"
           self.md.value = h[:form][:editor]
+          self.yaml.value = h[:form][:settings]
         end
         t = h[:form][:cmd]
         db[:stat] = self.stat.members(with_scores: true).to_h
@@ -217,11 +260,11 @@ cd pmm && chmod +x install.sh && ./install.sh
   
   class App < Sinatra::Base
     HTML = %[
-	      <DOCTYPE html>
-		<head>
-		  <style>
-.i > *  { vertical-align: middle; font-size: medium; }
-.i > button { text-align: center; padding: 0; }
+    	      <DOCTYPE html>
+              	<head>
+	          <style>
+                    .i > *  { vertical-align: middle; font-size: medium; }
+                    .i > button { text-align: center; padding: 0; }
 		    .l { left: 0; }
 		    .r { right: 0; }
 		    code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -293,7 +336,7 @@ cd pmm && chmod +x install.sh && ./install.sh
 	
 	
 	$(function() {
-            $("#id").prop("href", 'https://vango.me/?id=' + id);
+            $("#id").prop("href", window.location + '?id=' + id);
 	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
 	    $(document).on('click', ".task", function(ev) { 
 		ev.preventDefault(); 
@@ -307,7 +350,7 @@ cd pmm && chmod +x install.sh && ./install.sh
                 $('#run').prop('disabled', true); 
             });
             $(document).on('click', '.tag_dn', function() {
-                $("#b_c").val("-" + $(this).val() + " ");                                                                                     
+                $("#b_c").val("-" + $(this).val() + " ");                  
                 $("#run").css('color', 'orange');
                 $('#run').prop('disabled', true); 
             }); 

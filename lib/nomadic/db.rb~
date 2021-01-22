@@ -1,0 +1,14 @@
+module Nomadic
+  def db
+    DB.new
+  end
+  class DB
+    def initialize
+      @redis = Redis.new("vango.me")
+      @mongo = Mongo::Client.new(['vango.me:27017'], database: APP)
+    end
+    def peek
+      { redis: @redis, mongo: @mongo }
+    end
+  end
+end
