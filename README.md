@@ -16,5 +16,5 @@ The node.ino file should be flashed to any compatible ESP8266 or ESP32 microcont
 git clone https://github.com/xorgnak/urban-invention
 cd urban-invention
 chmod +x build.sh
-./build.sh
+./build.sh && nomadic
 ```
