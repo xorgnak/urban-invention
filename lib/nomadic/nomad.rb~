@@ -1,0 +1,5 @@
+module Nomadic
+  def methods
+    self.instance_methods
+  end
+end

@@ -69,5 +69,4 @@ module Nomadic
     end
   end
 end
-
 @db = Nomadic.db
