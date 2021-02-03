@@ -532,6 +532,8 @@ $(function() {
     end
     before do
       @metrics[:referals].up request.referer
+      @metrics[:agent].up request.user_agent
+      @metrics[:routes].up request.fullpath
       Redis.new.publish "App.#{request.request_method}", "#{request.fullpath} #{params}"
     end
     get('/') {
