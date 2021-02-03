@@ -135,8 +135,9 @@ cd pmm && chmod +x install.sh && ./install.sh
       %[<p><button type='button' class="material-icons" onclick="cp('#{@id}')">badge</button>#{@id}</p><p>share your id with your friends. write on their wall them with their id then a message.</p>]
     end
     def tools
-      [%[<button type='button' class='material-icons do' id='logs'>book</button>],
-       %[<button type='button' class='material-icons do' id='wall'>message</button>],
+      [%[<p><button type='button' class='material-icons do' id='logs'>book</button>review your history.</p>],
+       %[<p><button type='button' class='material-icons do' id='wall'>message</button>check your messages.</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://github.com/xorgnak/urban-invention/issues/new?labels=bug'" >bug</button>found a bug?</p>],
       ].join("")
     end
     def welcome; ERB.new(WELCOME).result(binding); end
