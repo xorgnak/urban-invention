@@ -1,4 +1,78 @@
 module Nomadic
+  ######
+  #
+  #
+  # NOMADIC HUB
+  #
+  #
+  ######
+  #
+  ##
+  # OVERVIEW
+  # - One nomadic server can handle many domains in which users may or
+  # may not overlap.
+  # - It is designed to get running and working as fast as possible and
+  # to be as light on system resources but still allow flexibility and
+  # customization as possible.
+  # - It is not designed for comfort of developers, users, or anything
+  # that can pass a touring test.
+  # - Machines of all sizes love it.
+  #
+  ##
+  # CONFIGURATION
+  ##
+  # Network Prefix
+  # 
+  # the identifier of the id on the overall nomadic network. Equivelent
+  # to '1' for the original btc addresses, or 1z for ups tracking codes.
+  # Same idea, just your own slight varient.
+  PREFIX = "Nx"
+  ##
+  # Should we cluster to a master hub?
+  #
+  # If you set this to your master hub domain/ip address, your hub will
+  # share all of it's data with it's client users and allow their hubs
+  # to connect to it to share it's data.  You should probably both know
+  # what you're doing if you're reading this and file an issue in the
+  # github for further configuration advice.
+  CLUSTER = false
+  ##
+  # On a scale of 0 to 4, how private is this hub?
+  #
+  #             0 <-----------[ 2 ]------------->  4
+  #          (private)     (semi-private)      (public)
+  #          [deck]          [hive]            [google]
+  #
+  # Moving this setting up with reduce the maximum available privledge
+  # a user can have on the system.
+  # - sets the minimum user id creation possible.  Lower has higher
+  # privledge with all Nx0000000000 always being the hive itself.
+  # - sets the $SAFE level in the cmd input.  0 can do anything they want.
+  # Great to let kids play on a raspberry pi that's not connected to a
+  # network.  Very BASIC.  Anything above 3 sets $SAFE to 3 and imposes
+  # further restrictions on the redis server and mqtt broker.
+  SAFETY = 0
+  #
+  ##
+  # Route Function
+  #
+  # catalog: each route is the public interface for a single user or
+  # group. Has a basic command interface.  Great for sales and
+  # marketing teams or for keeping your grocery list.
+  #
+  # world: each route is a specific area complete with it's own content
+  # and interactions. Each element has a gridsquare location in x,y,z space. Has tools to dynamically create content.
+  #
+  # none: no public routes.  Just the basic tools.
+  FUNCTION = "catalog"
+  #
+  ##
+  # Forking
+  #
+  # If you've read this far, you should probably just go ahead and fork
+  # the repo at https://github.com/xorgnak/urban-invention, and note
+  # your changes accordingly.
+  
   load "nomadic/db.rb"
   load "nomadic/nomad.rb"
   autoload :VERSION, "nomadic/version"
@@ -96,6 +170,7 @@ cd pmm && chmod +x install.sh && ./install.sh
     list :task
     list :note
     set :tag
+    set :grp
     list :log
     def initialize u
       @id = u
@@ -116,17 +191,19 @@ cd pmm && chmod +x install.sh && ./install.sh
       self.log.to_a.reverse.join("\n")
     end
     def html
-      if self.md.value != nil
-        hm = self.md.value
-      else
-        hm = INDEX
+      if FUNCTION != 'none'
+        if self.md.value != nil
+          hm = self.md.value
+        else
+          hm = INDEX
+        end
+        @me = YAML.load(self.yaml.value)
+        [
+          ERB.new(HEAD).result(binding),
+          Kramdown::Document.new(ERB.new(hm).result(binding)).to_html,
+          "</body></html>"
+        ].flatten.join('')
       end
-      @me = YAML.load(self.yaml.value)
-      [
-        ERB.new(HEAD).result(binding),
-        Kramdown::Document.new(ERB.new(hm).result(binding)).to_html,
-        "</body></html>"
-      ].flatten.join('')
     end
     
     def msg h={ ts: Time.now.utc.to_t, from: @id, to: @id, msg: "" }
@@ -138,7 +215,7 @@ cd pmm && chmod +x install.sh && ./install.sh
     end
     def tools
       [%[<p><button type='button' class='material-icons do' id='logs'>book</button>review your history.</p>],
-       %[<p><button type='button' class='material-icons do' id='wall'>message</button>check your messages.</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://zoom.us/'">message</button>meet and greet.</p>],
        %[<p><button type='button' class='material-icons' onclick="window.location = 'https://github.com/xorgnak/urban-invention/issues/new?labels=bug'" >bug_report</button>found a bug?</p>],
        %[<p><button type='button' class='material-icons' onclick="window.location = 'https://voice.google.com'" >call</button>make some calls.</p>],
        %[<p><button type='button' class='material-icons' onclick="window.location = 'https://gmail.com'" >all_inbox</button>check your email.</p>],
@@ -179,7 +256,7 @@ cd pmm && chmod +x install.sh && ./install.sh
       m.delete('wallet')
       tl = []
       mw = %[<p class='tag'><button class='tag_up e' value='$'>+</button><button class="c" style="width: 70%;" disabled>$#{self.stat['wallet']}</button><button class='tag_dn e' value='$'>-</button></p>]
-      mm = m.map {|e| %[<p class='tag'><button class='tag_up e' value='#{e}'>+</button><button class="c" style="width: 70%;" disabled>#{e} (#{self.stat[e]})</button><button class='tag_dn e' value='#{e}'>-</button></p>]}
+      mm = m.map {|e| %[<p class='tag'><button class='tag_up e' value='#{e}'>+</button><button class="c look" value='#{e}' style="width: 70%;">#{e} (#{self.stat[e]})</button><button class='tag_dn e' value='#{e}'>-</button></p>]}
       return [tl, mw, mm].flatten.join('')
     end
     def tasks *t
@@ -270,6 +347,7 @@ cd pmm && chmod +x install.sh && ./install.sh
                 self.stat.incr(t)
               end
             end
+            Redis::Set.new("group:#{t}") << @id
             self.tag << t
             self.log << "# #{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
             o = tags
@@ -289,7 +367,10 @@ cd pmm && chmod +x install.sh && ./install.sh
               else
                 arr = ''
               end
-              self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; self.send(:'#{h[:trigger]}'#{arr}); };])
+              if FUNCTION == 'world'
+                @world = World.new(PREFIX)
+              end
+              self.instance_eval(%[@b = lambda { @db[:cat] = '#{h[:form][:cat]}'; $SAFE = #{SAFETY}; self.send(:'#{h[:trigger]}'#{arr}); };])
               o = @b.call
             rescue => re
               self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n>> #{re}"
@@ -533,8 +614,26 @@ $(function() {
       @metrics = Hash.new { |h,k| h[k] = Metric.new(k) }
     end
     helpers do
-      def rand_id
-        a = ['Nx000']; 7.times { a << rand(16).to_s(16) }; return a.join('')
+      ## ID STRUCTURE
+      # NxCIIIIIIrrr
+      def rand_id *a
+        # always Nx0 for hubs. 0 signals interactive. node class is determined by the third character and cannot be 0.
+        a = ["#{PREFIX}0"];
+        if FUNCTION == 'catalog' 
+          9.times { a << rand(1..16).to_s(16) };
+        elsif FUNCTION == 'world'
+          if a[0]
+            a << a[0]
+            if a[1]
+              a << "#{'0' * (3 - a.length)}#{a[1]}"
+            else
+              a << "fff";
+            end
+          else
+            a << "ffffff"
+          end
+        end
+        return a.join('')
       end
     end
     configure do
@@ -552,21 +651,21 @@ $(function() {
         ERB.new(HTML).result(binding)
     }  
     get('/:id') {
-      case params[:id]
-      when 'pmm'
-        ERB.new(PMM).result(binding)
-      else
-        if @vm[params[:id]].md != nil
+      case
+      when FUNCTION != 'none' && Redis::Set.new("tags").include?(params[:id])
+        @members = Redis::Set.new("group:#{params[:id]}").members
+        @group = Redis::HashKey.new("tag:#{params[:id]}")
+        ERB.new(TAG).result(binding)
+      when FUNCTION != 'none' && @vm[params[:id]].md != nil 
           @vm[params[:id]].html
-        else
-          redirect '/'
-        end
+      else
+        redirect '/'
       end
     }
     post('/') {
-        content_type 'application/json';
-        e = @vm[params[:id]] << params
-        return JSON.generate(e)
+      content_type 'application/json';
+      e = @vm[params[:id]] << params
+      return JSON.generate(e)
     }
     not_found do
       h = {
