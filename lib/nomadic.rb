@@ -561,6 +561,7 @@ $(function() {
         port: request.port,
         path: request.fullpath,
         referer: request.referer,
+        agent: request.user_agent,
         params: params
       }
       t = Time.now.utc.to_i
