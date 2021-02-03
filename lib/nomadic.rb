@@ -8,7 +8,7 @@ module Nomadic
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>directions_walk</button>you are here.</li>],
              %[<li><button class='material-icons' style='padding: 0; font-size: small;
 ' disabled>backpack</button>other userful tools.</li>],
-             %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>exposure</button>put a tag into your input.</li>],
+             %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>exposure</button>count money and other things.</li>],
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>notes</button>Edit your public page. here's <a href="https://devhints.io/markdown">how</a>. Use the <code>save</code> command to save and publish your changes.</li>],
              %[<li><code>+$100</code>/<code>-$100</code>modify your wallet.</li>],
              %[<li><code>+tag</code>/<code>-tag</code>modify the "tag" counter.</li>],
