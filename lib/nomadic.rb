@@ -388,10 +388,6 @@ tton>
       </button>
       <button type='button' class='material-icons do' id='edit'>notes</button>
     </p> 
-    <p id="toolkit" style="display: none;">
-       <button type='button' class='material-icons do' id='logs'>book</button>
-       <button type='button' class='material-icons do' id='wall'>message</button>
-    </p>
     <fieldset style='height: 80vh; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output' style='height: 100%;'>#{WELCOME}</div>
@@ -465,9 +461,6 @@ $(function() {
         $("#auth").hide();
         $("#form").show();
         sendForm("auth");
-    });
-    $(document).on('click', "#tools", function() {
-        $("#toolkit").toggle();
     });
     $(document).on('click', ".task", function(ev) { 
 	ev.preventDefault(); 
