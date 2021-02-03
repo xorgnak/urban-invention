@@ -3,21 +3,19 @@ module Nomadic
     self.instance_methods
   end
   def self.help
-    he = []
+#    he = []
     @help = {}
     @help[:nmap] = %[A device profiling utility.]
-    @help[:hub] = %[A decentralized messaging handler.]
-    @help[:broker] = %[Broker incomming mqtt traffic.]
-    @help[:mqtt] = %[Send mqtt messages by topic.]
-    @help[:db] = %[The interface to the local nomadic database.]
-    @help.each_pair { |k,v| he << %[@nomad.#{k} => #{v}] }
-    puts ERB.new(he.join("\n")).result(binding)
+    @help[:metric] = %[A sampling of server metrics.]
+    @help[:help] = %[This help file.]
+    #    @help.each_pair { |k,v| he << %[@nomad.#{k} => #{v}] }
+    @help.map { |k,v| %[<p><code>@nomad.#{k}</code><span>#{v}</span></p>] }.join("")
   end
   def self.nmap *a
-    `nmap #{a.join(' ')}`.split("\n")
+    `nmap #{a.join(' ')}`.split("\n").map { |e| %[<p>#{e}</p>] }.join("")
   end
   def self.metric m
-    Metric.new(m).to_h
+    Metric.new(m).to_h.map { |k,v| %[<p>#{v}: #{k}</p>] }.join("")
   end
   def self.hub t
     if !@@HUB.has_key? t
