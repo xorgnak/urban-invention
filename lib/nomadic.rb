@@ -134,6 +134,11 @@ cd pmm && chmod +x install.sh && ./install.sh
     def card
       %[<p><button type='button' class="material-icons" onclick="cp('#{@id}')">badge</button>#{@id}</p><p>share your id with your friends. write on their wall them with their id then a message.</p>]
     end
+    def tools
+      [%[<button type='button' class='material-icons do' id='logs'>book</button>],
+       %[<button type='button' class='material-icons do' id='wall'>message</button>],
+      ].join("")
+    end
     def welcome; ERB.new(WELCOME).result(binding); end
     def logs;
       x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join("\n")
@@ -375,12 +380,18 @@ cd pmm && chmod +x install.sh && ./install.sh
     </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
-      <button type='button' class='do' id='tags' style='width: 60%;'>
+      <button type='button' class='material-icons do' id='tools'>backpack</bu\
+tton>
+      <button type='button' class='do' id='tags' style='width: 45%;'>
 	<span class="material-icons" style="padding: 0 5% 0 5%; vertical-align: middle;">exposure</span>
 	<span id="mode" style="right:0;">tags</span>
       </button>
       <button type='button' class='material-icons do' id='edit'>notes</button>
     </p> 
+    <p id="toolkit" style="display: none;">
+       <button type='button' class='material-icons do' id='logs'>book</button>
+       <button type='button' class='material-icons do' id='wall'>message</button>
+    </p>
     <fieldset style='height: 80vh; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output' style='height: 100%;'>#{WELCOME}</div>
@@ -454,6 +465,9 @@ $(function() {
         $("#auth").hide();
         $("#form").show();
         sendForm("auth");
+    });
+    $(document).on('click', "#tools", function() {
+        $("#toolkit").toggle();
     });
     $(document).on('click', ".task", function(ev) { 
 	ev.preventDefault(); 
