@@ -8,10 +8,12 @@ require 'kramdown'
 require 'paho-mqtt'
 require 'cinch'
 require 'pry'
+require 'crypt/blowfish'
+require 'crypt/gost'
 
 require 'nomadic'
 
 Nomadic.begin
-
+@nomad = Nomadic.nomad
 Pry.start
 
