@@ -325,49 +325,57 @@ cd pmm && chmod +x install.sh && ./install.sh
   end
 
   class App < Sinatra::Base
-    HTML = %[
-    	      <DOCTYPE html>
-              	<head>
-	          <style>
-                    .i > *  { vertical-align: middle; font-size: medium; }
-                    .i > button { text-align: center; padding: 0; }
-		    .l { left: 0; }
-		    .r { right: 0; }
-		    code { border: thin solid black;  padding: 0 1% 0 1%; }
-		    .tag { text-align: center; }
-                    .tag > .c { width: 60%; }
-                    .tag > .e { padding: 0; }
-                    .link { color: black; text-decoration: none; border: thin solid black; border-radius: 10px; }
-		  </style>
-
+	      HTML = %[<!DOCTYPE html>
+<html>
+  <head>
+    <!-- basic style that will always work. -->
+    <style>
+      .i > *  { vertical-align: middle; font-size: medium; }
+      .i > button { text-align: center; padding: 0; }
+      .l { left: 0; }
+      .r { right: 0; }
+      code { border: thin solid black;  padding: 0 1% 0 1%; }
+      .tag { text-align: center; }
+      .tag > .c { width: 60%; }
+      .tag > .e { padding: 0; }
+      .link { color: black; text-decoration: none; border: thin solid black; border-radius: 10px; }
+    </style>
+<!-- mobile first -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<title>nomadic</title>
+<!-- INCLUDED LIBRARIES -->
+<!-- All included libraries are hosted by third party cdn, verified by fingerprint - for safety. -->
+<!-- jQuery: helpful object orientation for javascript. -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<!-- Google Material Icons: simple, understandable icons. -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- pure javascript sha1 implementation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha1/0.6.0/sha1.js"></script>
-	    </head>
-	    <body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
-            <div id='auth' style='font-size: larger; text-align: center; display: none; padding: 5%;'>
-              <div style="border: thin solid black; border-radius: 10px; margin: 5% 0 0 0;">
-                <h1>login</h1>
-                <h2 style='margin: 0;'><input type='text' id='U' placeholder='username'></h2>
-                <h2 style='margin: 0;'><input type='password' id='Z' placeholder='password'></h2>
-                <h2><button type='button' id='signin'>SIGN IN</button></h2>
-              </div>
-            </div>
-	    <form id='form' style='margin: 0, padding: 0;'>
-  <datalist id='cmds'>
-    <option value='[ ] '>
-    <option value='+$'>
-    <option value='-$'>
-    <option value='@'>
-    <option value='#'>
-  </datalist>
+
+</head>
+<body style='height: 100%; width: 100%; margin: 0; padding: 0;'>
+  <div id='auth' style='font-size: larger; text-align: center; display: none; padding: 5%;'>
+    <div style="border: thin solid black; border-radius: 10px; margin: 5% 0 0 0;">
+      <h1>login</h1>
+      <h2 style='margin: 0;'><input type='text' id='U' placeholder='username'></h2>
+      <h2 style='margin: 0;'><input type='password' id='Z' placeholder='password'></h2>
+      <h2><button type='button' id='signin'>SIGN IN</button></h2>
+    </div>
+  </div>
+  <form id='form' style='margin: 0, padding: 0;'>
+    <datalist id='cmds'>
+      <option value='[ ] '>
+      <option value='+$'>
+      <option value='-$'>
+      <option value='@'>
+      <option value='#'>
+    </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
       <button type='button' class='do' id='tags' style='width: 60%;'>
-       <span class="material-icons" style="padding: 0 5% 0 5%; vertical-align: middle;">exposure</span>
-       <span id="mode" style="right:0;">tags</span>
+	<span class="material-icons" style="padding: 0 5% 0 5%; vertical-align: middle;">exposure</span>
+	<span id="mode" style="right:0;">tags</span>
       </button>
       <button type='button' class='material-icons do' id='edit'>notes</button>
     </p> 
@@ -375,146 +383,128 @@ cd pmm && chmod +x install.sh && ./install.sh
       <legend id='input'>welcome</legend>
       <div id='output'>#{WELCOME}</div>
     </fieldset>
-   <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
+    <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button type='button' class='material-icons do' id='tasks' style='color: green;'>check_box_outline_blank</button>
-      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 60%;' placeholder='try me out...'>
+      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 50%;' placeholder='try me out...'>
       <button type='button' class='material-icons do' id='run' disabled>send</button>
     </p> 
   </form>
   <script>
-    // get unique id OR use one passed in.
-        var d = { id: '<%= rand_id %>' };
-	// turn form into json object.
-	function getForm() {
-	    var ia = {};
-            console.log("get", $("#form").serializeArray());
-	    $.map($('.form'), function(n, i) { ia[$(n).attr('name')] = $(n).val(); }); return ia;
-	}
-	function sendForm(th) {
-            $("#run").css('color', 'blue');
-	    var dx = {};
-	    Object.assign(dx, d);
-            dx.user = localStorage.getItem("U");
-            dx.pass = localStorage.getItem("Z");
-	    dx.trigger = th;
-	    dx.form = getForm();
-	    console.log("send", dx);
-            jQuery.post('/', dx, function(dd) {
-		console.log("got", dd);
-                if ( d.badauth ) {
-                   localStorage.clear();
-                   $("#t").hide();
-                   $("#b").hide();
-                   $('html').innerHTML = "<h1 style='padding: 25%; height: 100%; text-align: center;'><span style='border: thin outset black; border-radius: 10px;'><a href='" + window.location + "'>try again...</a></span></h1>";
-                } else {
-                  d.id = dd.id;
-                  d.token = dd.token;
-                  d.time = dd.timestamp;
-		  $("#input").html(dd.cmd); 
-		  $("#output").html(dd.output);
-		  $("#form")[0].reset();
-		  if ( $("#b").val() == '' ) {
-                    $("#b").val(dd.input);
-		  }
-                  $("#tasks").css('color', 'green');
-                  $('#tasks').prop('disabled', false); 
-                  $("#run").css('color', 'black');
-                  $('#run').prop('disabled', true); 
-                }
-            });
-	}
-	
-	$(function() {
-//            var q = location.search.substring(1);
-//            if (q != '') {
-//            var j = JSON.parse('{"' + q.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(k,v) { return k===""?v:decodeURIComponent(v) });
-//            d = j;
-//            console.log("J", d);
-//             } else {
-//               window.location = window.location + '?id=<%= rand_id %>';
-//             }
-             var z = localStorage.getItem("Z");
-             if (z) {
-                $("#form").hide();
-                $("#auth").show();
-             }
+var d = { id: '<%= rand_id %>' };
+function getForm() {
+    var ia = {};
+    console.log("get", $("#form").serializeArray());
+    $.map($('.form'), function(n, i) { ia[$(n).attr('name')] = $(n).val(); }); return ia;
+}
+function sendForm(th) {
+    $("#run").css('color', 'blue');
+    var dx = {};
+    Object.assign(dx, d);
+    dx.user = localStorage.getItem("U");
+    dx.pass = sha1($("#Z").val());
+    dx.trigger = th;
+    dx.form = getForm();
+    console.log("send", dx);
+    jQuery.post('/', dx, function(dd) {
+	console.log("got", dd);
+        if ( d.badauth ) {
+            localStorage.clear();
+            $("#t").hide();
+            $("#b").hide();
+            $('html').innerHTML = "<h1 style='padding: 25%; height: 100%; text-align: center;'><span style='border: thin outset black; border-radius: 10px;'><a href='" + window.location + "'>try again...</a></span></h1>";
+            // halt and catch fire!
+        } else {
+            d.id = dd.id;
+            d.token = dd.token;
+            d.time = dd.timestamp;
+	    $("#input").html(dd.cmd); 
+	    $("#output").html(dd.output);
+	    $("#form")[0].reset();
+	    if ( $("#b").val() == '' ) {
+                $("#b").val(dd.input);
+	    }
+            $("#tasks").css('color', 'green');
+            $('#tasks').prop('disabled', false); 
+            $("#run").css('color', 'black');
+            $('#run').prop('disabled', true);
+            // continue session. 
+        }
+    });
+}
 
-	    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
-            $(document).on('click', '#signin', function(ev) { 
-                ev.preventDefault();
-                localStorage.setItem("U", sha1($("#U").val()));
-                localStorage.setItem("Z", sha1($("#Z").val()));
-                $("#U").val("");
-                $("#Z").val("");
-                $("#auth").hide();
-                $("#form").show();
-                sendForm("auth");
-             });
-	    $(document).on('click', ".task", function(ev) { 
-		ev.preventDefault(); 
-		$("#b_c").val("[X] " + $(this).val());
-                $('#run').prop('disabled', false);
-                $("#run").click(); 
-	    });
-            $(document).on('click', '.tag_up', function() {
-                $("#b_c").val("+" + $(this).val());                                                                                                     
-                $("#run").css('color', 'orange');                                                                                                             
+$(function() {
+    var u = localStorage.getItem("U");
+    if (u == null) {
+        $("#form").hide();
+        $("#auth").show();
+    }
+    $(document).on('submit', "form", function(ev) { ev.preventDefault(); });
+    $(document).on('click', '#signin', function(ev) { 
+        ev.preventDefault();
+        localStorage.setItem("U", sha1($("#U").val()));
+        $("#U").val("");
+        $("#auth").hide();
+        $("#form").show();
+        sendForm("auth");
+    });
+    $(document).on('click', ".task", function(ev) { 
+	ev.preventDefault(); 
+	$("#b_c").val("[X] " + $(this).val());
+        $('#run').prop('disabled', false);
+        $("#run").click(); 
+    });
+    $(document).on('click', '.tag_up', function() {
+        $("#b_c").val("+" + $(this).val());
+        $("#run").css('color', 'orange');
+        $('#run').prop('disabled', true); 
+    });
+    $(document).on('click', '.tag_dn', function() {
+        $("#b_c").val("-" + $(this).val() + " ");                  
+        $("#run").css('color', 'orange');
+        $('#run').prop('disabled', true); 
+    }); 
+    $(document).on('keyup', '.form', function() {
+        var c = $(this).val();  
+        if (c.match(/ $/)) {
+            $("#run").css('color', 'orange');
+            $('#run').prop('disabled', true);
+            $("#tasks").css('color', 'black');
+            $('#tasks').prop('disabled', true); 
+        } else if (c != "") {
+            if (c.match(/^[\[]/)) {
+                $("#tasks").css('color', 'black');
+                $('#tasks').prop('disabled', true);
+            } else {
+                $("#tasks").css('color', 'green');
+                $('#tasks').prop('disabled', false); 
+            } 
+            if (c.match(/[^\.]/)) {
+                $("#run").css('color', 'green');
+                $('#run').prop('disabled', false);                    
+            } else {
+                $("#run").css('color', 'black');
                 $('#run').prop('disabled', true); 
-            });
-            $(document).on('click', '.tag_dn', function() {
-                $("#b_c").val("-" + $(this).val() + " ");                  
-                $("#run").css('color', 'orange');
-                $('#run').prop('disabled', true); 
-            }); 
-            $(document).on('keyup', '.form', function() {
-                 var c = $(this).val();  
-                 if (c.match(/ $/)) {
-                   $("#run").css('color', 'orange');
-                   $('#run').prop('disabled', true);
-                   $("#tasks").css('color', 'black');                                                                                                      
-                   $('#tasks').prop('disabled', true); 
-                 } else if (c != "") {
-                   if (c.match(/^[\[]/)) {
-                     $("#tasks").css('color', 'black');
-                     $('#tasks').prop('disabled', true);
-                   } else {
-                     $("#tasks").css('color', 'green');
-                     $('#tasks').prop('disabled', false); 
-                   } 
-                   if (c.match(/[^\.]/)) {
-                     $("#run").css('color', 'green');
-                     $('#run').prop('disabled', false);                    
-                   } else {
-                     $("#run").css('color', 'black');
-                     $('#run').prop('disabled', true); 
-                     $("#tasks").css('color', 'green');                                                                               
-                     $('#tasks').prop('disabled', false); 
-                   }
-                 } else {
-                   $("#run").css('color', 'black');
-                   $('#run').prop('disabled', true); 
-                   $("#tasks").css('color', 'green');                                                                                                      
-                   $('#tasks').prop('disabled', false); 
-                 }
-            });
-            $(document).on('click', '#cmd', function(ev) {                                                                                                  
-                ev.preventDefault();                                                                                                                   
-                $("#tasks").css('color', 'orange');                                                                                                  
-                $('#tasks').prop('disabled', false);
-            }); 
-//          $(document).on('click', '#tasks', function(ev) {
-//                ev.preventDefault();
-//                if ($("#b_c").val() == "") {
-//                   $("#b_c").val("tasks");
-//                }
-//            }); 
-	    $(document).on('click', '.do', function(ev) { 
-		ev.preventDefault(); 
-		sendForm($(this).attr('id'));
-	    });
-	});
-	</script>
-	    </body>
+                $("#tasks").css('color', 'green');
+                $('#tasks').prop('disabled', false); 
+            }
+        } else {
+            $("#run").css('color', 'black');
+            $('#run').prop('disabled', true); 
+            $("#tasks").css('color', 'green');
+            $('#tasks').prop('disabled', false); 
+        }
+    });
+    $(document).on('click', '#cmd', function(ev) {
+        ev.preventDefault();
+        $("#tasks").css('color', 'orange');
+        $('#tasks').prop('disabled', false);
+    }); 
+    $(document).on('click', '.do', function(ev) { 
+	ev.preventDefault(); 
+	sendForm($(this).attr('id'));
+    });
+});
+									     </script>										     </body>
 </html>
         ]
     
