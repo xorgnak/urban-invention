@@ -6,6 +6,8 @@ module Nomadic
              %[<p style="margin: 0;">type the <code>command</code> below to run the <span class='action'>action.</p>],
              %[<ul style='text-align: left; font-size: small; margin: 0; padding: 0;' id="man">],
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>directions_walk</button>you are here.</li>],
+             %[<li><button class='material-icons' style='padding: 0; font-size: small;
+' disabled>backpack</button>other userful tools.</li>],
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>exposure</button>put a tag into your input.</li>],
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>notes</button>Edit your public page. here's <a href="https://devhints.io/markdown">how</a>. Use the <code>save</code> command to save and publish your changes.</li>],
              %[<li><code>+$100</code>/<code>-$100</code>modify your wallet.</li>],
