@@ -137,7 +137,11 @@ cd pmm && chmod +x install.sh && ./install.sh
     def tools
       [%[<p><button type='button' class='material-icons do' id='logs'>book</button>review your history.</p>],
        %[<p><button type='button' class='material-icons do' id='wall'>message</button>check your messages.</p>],
-       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://github.com/xorgnak/urban-invention/issues/new?labels=bug'" >bug</button>found a bug?</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://github.com/xorgnak/urban-invention/issues/new?labels=bug'" >bug_report</button>found a bug?</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://voice.google.com'" >call</button>make some calls.</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://gmail.com'" >all_inbox</button>check your email.</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://drive.google.com'" >work</button>get some work done.</p>],
+       %[<p><button type='button' class='material-icons' onclick="window.location = 'https://youtube.com'" >live_tv</button>Watch videos.</p>],
       ].join("")
     end
     def welcome; ERB.new(WELCOME).result(binding); end
