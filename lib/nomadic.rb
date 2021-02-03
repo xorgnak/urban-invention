@@ -16,8 +16,7 @@ module Nomadic
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>send</button>process your input.</li>],
              
              %[</ul>],
-             %[<p style="text-align: center;"><span id='foot' style='font-size: small; padding: 1% 3% 1% 3%; border: thin dashed black; border-radius: 10px;'><span><span><a class="material-icons" style="font-size: small;\
- color: red; text-decoration: none;" href="https://www.buymeacoffee.com/maxcatman">favorite</a></span><span class="material-icons" style="font-size: small;">copyright</span><span>2021</span></span><span><a href='https://xorgnak.github.io/resume/' class="material-icons" style="text-decoration: none; font-size: small;">person</a></span></span></p>],
+             %[<p style="text-align: center;"><span id='foot' style='font-size: small; padding: 1% 3% 1% 3%; border: thin dashed black; border-radius: 10px;'><span><span><a class="material-icons" style="font-size: small; color: red; text-decoration: none;" href="https://www.buymeacoffee.com/maxcatman">favorite</a></span><span class="material-icons" style="font-size: small;">copyright</span><span>2021</span></span><span><a href='https://xorgnak.github.io/resume/' class="material-icons" style="text-decoration: none; font-size: small;">person</a></span></span></p>],
              %[</div>]
             ].join('')
   HEAD = [%[<!DOCTYPE html><head><style>],
@@ -131,6 +130,9 @@ cd pmm && chmod +x install.sh && ./install.sh
       self.wal << JSON.generate(h)
     end
     def id; @id; end
+    def card
+      %[<p><button type='button' class="material-icons" onclick="cp('#{@id}')">badge</button>#{@id}</p><p>share your id with your friends. write on their wall them with their id then a message.</p>]
+    end
     def welcome; ERB.new(WELCOME).result(binding); end
     def logs;
       x = self.log.to_a.reverse.map { |e| %[#{e}\n] }.join("\n")
@@ -257,7 +259,7 @@ cd pmm && chmod +x install.sh && ./install.sh
             end
             self.tag << t
             self.log << "# #{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
-            o = tasks
+            o = tags
           else
             if h[:form][:cmd] == "save"
               self.md.value = h[:form][:editor]
@@ -365,11 +367,10 @@ cd pmm && chmod +x install.sh && ./install.sh
   </div>
   <form id='form' style='margin: 0, padding: 0;'>
     <datalist id='cmds'>
-      <option value='[ ] '>
-      <option value='+$'>
-      <option value='-$'>
-      <option value='@'>
-      <option value='#'>
+      <option value='card'>										     
+      <option value='logs'>
+      <option value='+'>
+      <option value='-'>										     
     </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
       <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
@@ -379,9 +380,9 @@ cd pmm && chmod +x install.sh && ./install.sh
       </button>
       <button type='button' class='material-icons do' id='edit'>notes</button>
     </p> 
-    <fieldset style='height: 80%; overflow-y: scroll;'>
+    <fieldset style='height: 80vh; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
-      <div id='output'>#{WELCOME}</div>
+      <div id='output' style='height: 100%;'>#{WELCOME}</div>
     </fieldset>
     <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
       <button type='button' class='material-icons do' id='tasks' style='color: green;'>check_box_outline_blank</button>
@@ -391,6 +392,7 @@ cd pmm && chmod +x install.sh && ./install.sh
   </form>
   <script>
 var d = { id: '<%= rand_id %>' };
+var z;										     
 function getForm() {
     var ia = {};
     console.log("get", $("#form").serializeArray());
@@ -401,7 +403,7 @@ function sendForm(th) {
     var dx = {};
     Object.assign(dx, d);
     dx.user = localStorage.getItem("U");
-    dx.pass = sha1($("#Z").val());
+    dx.pass = z;
     dx.trigger = th;
     dx.form = getForm();
     console.log("send", dx);
@@ -414,8 +416,8 @@ function sendForm(th) {
             $('html').innerHTML = "<h1 style='padding: 25%; height: 100%; text-align: center;'><span style='border: thin outset black; border-radius: 10px;'><a href='" + window.location + "'>try again...</a></span></h1>";
             // halt and catch fire!
         } else {
+	    d.token = dd.token;
             d.id = dd.id;
-            d.token = dd.token;
             d.time = dd.timestamp;
 	    $("#input").html(dd.cmd); 
 	    $("#output").html(dd.output);
@@ -431,10 +433,14 @@ function sendForm(th) {
         }
     });
 }
-
+function cp(t) {
+         $("#b_c").val(t);
+         $("#b_c").val().select();
+         document.execCommand("copy");
+}
 $(function() {
-    var u = localStorage.getItem("U");
-    if (u == null) {
+    var zz = localStorage.getItem("U");										 
+    if (zz == null || z == undefined) {
         $("#form").hide();
         $("#auth").show();
     }
@@ -442,6 +448,7 @@ $(function() {
     $(document).on('click', '#signin', function(ev) { 
         ev.preventDefault();
         localStorage.setItem("U", sha1($("#U").val()));
+	z = sha1($("#Z").val());
         $("#U").val("");
         $("#auth").hide();
         $("#form").show();
@@ -535,7 +542,11 @@ $(function() {
       when 'pmm'
         ERB.new(PMM).result(binding)
       else
-        @vm[params[:id]].html
+        if @vm[params[:id]].md != nil
+          @vm[params[:id]].html
+        else
+          redirect '/'
+        end
       end
     }
     post('/') {
