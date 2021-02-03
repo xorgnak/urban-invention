@@ -16,6 +16,9 @@ module Nomadic
   def self.nmap *a
     `nmap #{a.join(' ')}`.split("\n")
   end
+  def self.metric m
+    Metric.new(m).to_h
+  end
   def self.hub t
     if !@@HUB.has_key? t
       @@HUB[t] = IO.new(t)
