@@ -99,6 +99,7 @@ cd pmm && chmod +x install.sh && ./install.sh
       @id = u
       @prompt = ""
       @db = {}
+      @nomad = Nomadic.nomad
     end
     def macro s
       /:\w+\s/m.match(s).each { |e| @s.gsub(/ :#{e} /, %[<%= @me[:#{e}] %>]) }
