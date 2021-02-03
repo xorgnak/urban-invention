@@ -16,7 +16,7 @@ module Nomadic
              %[<li><button class='material-icons' style='padding: 0; font-size: small;' disabled>send</button>process your input.</li>],
              
              %[</ul>],
-             %[<p style="text-align: center;"><span id='foot' style='font-size: small; padding: 1% 3% 1% 3%; border: thin dashed black; border-radius: 10px;'><span><span><a class="material-icons" style="font-size: small; color: red; text-decoration: none;" href="https://www.buymeacoffee.com/maxcatman">favorite</a></span><span class="material-icons" style="font-size: small;">copyright</span><span>2021</span></span><span><a href='https://xorgnak.github.io/resume/' class="material-icons" style="text-decoration: none; font-size: small;">person</a></span></span></p>],
+             %[<p style="text-align: center;"><span id='foot' style='font-size: small; padding: 1% 3% 1% 3%; border: thin dashed black; border-radius: 10px;'><span><span><a class="material-icons" style="font-size: small; color: red; text-decoration: none;" href="https://www.buymeacoffee.com/maxcatman">favorite</a></span></span><span><a href='https://xorgnak.github.io/resume/' class="material-icons" style="text-decoration: none; font-size: small;">person</a></span></span></p>],
              %[</div>]
             ].join('')
   HEAD = [%[<!DOCTYPE html><head><style>],
