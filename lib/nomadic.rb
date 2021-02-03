@@ -531,9 +531,9 @@ $(function() {
       set :server, 'thin'
     end
     before do
-      @metrics[:referals].up request.referer
+      @metrics[:referer].up request.referer
       @metrics[:agent].up request.user_agent
-      @metrics[:routes].up request.fullpath
+      @metrics[:route].up request.path_info
       Redis.new.publish "App.#{request.request_method}", "#{request.fullpath} #{params}"
     end
     get('/') {
@@ -561,7 +561,7 @@ $(function() {
         method: request.request_method,
         host: request.host,
         port: request.port,
-        path: request.fullpath,
+        path: request.path_info,
         referer: request.referer,
         agent: request.user_agent,
         params: params
