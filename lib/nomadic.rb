@@ -382,10 +382,7 @@ cd pmm && chmod +x install.sh && ./install.sh
       <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
       <button type='button' class='material-icons do' id='tools'>backpack</bu\
 tton>
-      <button type='button' class='do' id='tags' style='width: 45%;'>
-	<span class="material-icons" style="padding: 0 5% 0 5%; vertical-align: middle;">exposure</span>
-	<span id="mode" style="right:0;">tags</span>
-      </button>
+      <button type='button' class='material-icons do' id='tags'>exposure</button>
       <button type='button' class='material-icons do' id='edit'>notes</button>
     </p> 
     <fieldset style='height: 80vh; overflow-y: scroll;'>
