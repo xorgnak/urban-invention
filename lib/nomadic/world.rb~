@@ -1,0 +1,19 @@
+module Nomadic
+  include Redis::Objects
+
+  hash_key :xyz
+  class World
+    def initialize i
+      @id = i
+      if self.xyz["000000"] != nil
+        256.times do |z|
+          256.times do |y|
+            256.times do |x|
+              self.xyz["#{x.to_s(16)}#{y.to_s(16)}#{z.to_s(s)}"] = "{}"
+            end
+          end
+        end
+      end
+    end
+  end
+end
