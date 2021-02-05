@@ -484,12 +484,11 @@ cd pmm && chmod +x install.sh && ./install.sh
 var d = { init: true, id: "<%= rand_id %>", pipe: "<%= rand_pipe %>" };
 var z;
 
-var ws  = new WebSocket('ws://' + window.location.host + '?pipe=' + d.pipe );                                                 
+var ws  = new WebSocket('wss://' + window.location.host + '?pipe=' + d.pipe );                                                 
 ws.onopen = function() { message(d); console.log("WS: OPEN"); }                                                               
 ws.onclose = function() { console.log("WS: CLOSE"); }                                                                         
 ws.onmessage = function(m) { console.log("WS: IN", m); handle(JSON.parse(m.data)); }                                          
 function message(o) { console.log( "WS: OUT", o);  ws.send(JSON.stringify(o)); } 
-
 
 function handle(dd) {
         if ( dd.badauth ) {                                                                                                       
