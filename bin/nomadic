@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'eventmachine'
 require 'sinatra/base'
+require 'sinatra-websocket'
 require 'faye/websocket'
 require 'redis-objects'
 require 'json'

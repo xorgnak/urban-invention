@@ -285,112 +285,108 @@ cd pmm && chmod +x install.sh && ./install.sh
     
     # input handler
     def eval h
-      Redis.new.publish "DEBUG", "#{h}"
-      @db = { pipe: h["pipe"] }
-      if h['trigger']
-        case h['trigger']
-        when "auth"
-          if Redis::HashKey.new("Z")[h["user"]] == nil
-            Redis::HashKey.new("Z")[h["user"]] = h["pass"]
-            Redis::HashKey.new("z")[h["user"]] = h["id"]
-          end
-          if Redis::HashKey.new("Z")[h["user"]] == h["pass"]
-            n = Time.now.utc.to_f
-            @db[:id] = Redis::HashKey.new("z")[h["user"]]
-            Redis::HashKey.new("X")[@db[:id]] = Digest::SHA256.hexdigest("#{n}")
-            @db[:token] = Digest::SHA256.hexdigest("#{n}")
-            @db[:ws] = "connected!"
-            o = welcome
+      puts "EVAL: #{h}"
+      Redis.new.publish "EVAL", "#{h}"
+      @db = {}
+      case h[:trigger]
+      when "auth"
+        if Redis::HashKey.new("Z")[h[:user]] == nil
+          Redis::HashKey.new("Z")[h[:user]] = h[:pass]
+          Redis::HashKey.new("z")[h[:user]] = h[:id]
+        end
+        if Redis::HashKey.new("Z")[h[:user]] == h[:pass]
+          n = Time.now.utc.to_f
+          @db[:id] = Redis::HashKey.new("z")[h[:user]]
+          Redis::HashKey.new("X")[@db[:id]] = Digest::SHA256.hexdigest("#{n}")
+          @db[:token] = Digest::SHA256.hexdigest("#{n}")
+          @db[:ws] = "connected!"
+          o = welcome
+        else
+          @db[:badauth] = true
+          o = [%[<div style="text-align: center;">],
+               %[<h1>Please refresh and sign in again.</h1>],
+               %[<h1>],
+               %[<span style='border: thin solid black; border-radius: 10px;'>],
+               %[<a href="/" class='material-icons' style="text-decoration: none; color: black;">refresh</a>],
+               %[</span>],
+               %[</h1>],
+               %[</div>],
+               %[<script>],
+               %[$(function() { window.location = window.location });],
+               %[</script>]
+              ].join("")
+        end
+      else
+        if Redis::HashKey.new("X")[h[:id]] == h[:token]
+          if m = /^\[\]\s(.*)/.match(h[:form][:cmd])
+            t = "tasks"
+            self.task << m[1]
+            self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.tof_s}\n"
+            o = tasks
+          elsif m = /^\[X\]\s(.*)/.match(h[:form][:cmd])
+            t = "tasks"
+            self.task.delete(m[1])
+            self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}\n"
+            o = tasks
+          elsif m = /^([\+\-])(\$)?(\w+)(\s.*)?$/.match(h[:form][:cmd])
+            a = 1
+            if m[2] == '$'
+              t = "wallet"
+              a = m[3].to_i
+              if m[1] == '-'
+                self.stat.decr('wallet', a)
+              else
+                self.stat.incr('wallet', a)
+              end
+            else
+              t = m[3].split(' ')[0]
+              if m[1] == '-'
+                self.stat.decr(t)
+              else
+                self.stat.incr(t)
+              end
+            end
+            Redis::Set.new("group:#{t}") << @id
+            self.tag << t
+            self.log << "# #{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
+            o = tags
           else
-            @db[:badauth] = true
-            o = [%[<div style="text-align: center;">],
-                 %[<h1>Please refresh and sign in again.</h1>],
-                 %[<h1>],
-                 %[<span style='border: thin solid black; border-radius: 10px;'>],
-                 %[<a href="/" class='material-icons' style="text-decoration: none; color: black;">refresh</a>],
-                 %[</span>],
-                 %[</h1>],
-                 %[</div>],
-                 %[<script>],
-                 %[$(function() { window.location = window.location });],
-                 %[</script>]
-                ].join("")
+            if h[:form][:cmd] == "save"
+              self.md.value = h[:form][:editor]
+              self.yaml.value = h[:form][:settings]
+            end
+            t = h[:form][:cmd]
+            begin
+              ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
+              if t.split(' ').length > 0
+                arr = ", #{ar}"
+              else
+                arr = ''
+              end
+              if FUNCTION == 'world'
+                @world = World.new(PREFIX)
+              end
+              self.instance_eval(%[@b = lambda { $SAFE = #{SAFETY}; self.send(:'#{h[:trigger]}'#{arr}); };])
+              o = @b.call
+            rescue => re
+              self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n>> #{re}"
+              o = logs
+            end
+            self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n"
           end
         else
-          if Redis::HashKey.new("X")[h["id"]] == h["token"]
-            if m = /^\[\]\s(.*)/.match(h["form"]["cmd"])
-              t = "tasks"
-              self.task << m[1]
-              self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.tof_s}\n"
-              o = tasks
-            elsif m = /^\[X\]\s(.*)/.match(h["form"]["cmd"])
-              t = "tasks"
-              self.task.delete(m[1])
-              self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}\n"
-              o = tasks
-            elsif m = /^([\+\-])(\$)?(\w+)(\s.*)?$/.match(h["form"]["cmd"])
-              a = 1
-              if m[2] == '$'
-                t = "wallet"
-                a = m[3].to_i
-                if m[1] == '-'
-                  self.stat.decr('wallet', a)
-                else
-                  self.stat.incr('wallet', a)
-                end
-              else
-                t = m[3].split(' ')[0]
-                if m[1] == '-'
-                  self.stat.decr(t)
-                else
-                  self.stat.incr(t)
-                end
-              end
-              Redis::Set.new("group:#{t}") << @id
-              self.tag << t
-              self.log << "# #{m[4] || ' stat'}\n#{t}: #{m[1]}#{a} -> #{self.stat[t]}\n> #{Time.now.utc.to_s}\n"
-              o = tags
-            else
-              if h["form"]["cmd"] == "save"
-                self.md.value = h["form"]["editor"]
-                self.yaml.value = h["form"]["settings"]
-              end
-              t = h["form"]["cmd"]
-              begin
-                ar = t.split(' ').map { |e| "\"#{e}\"" }.join(', ')
-                if t.split(' ').length > 0
-                  arr = ", #{ar}"
-                else
-                  arr = ''
-                end
-                if FUNCTION == 'world'
-                  @world = World.new(PREFIX)
-                end
-                self.instance_eval(%[@b = lambda { $SAFE = #{SAFETY}; self.send(:'#{h["trigger"]}'#{arr}); };])
-                o = @b.call
-              rescue => re
-                self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n>> #{re}"
-                o = logs
-              end
-              self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n"
-            end
-          else
-            o = "Bad token."
-          end
+          o = "Bad token."
         end
-        @db[:ws] = @msg
-        @db[:cmd] = @prompt
-        @db[:input] = t
-        @db[:output] = o;
-        @db[:ts] = Time.now.utc
-        @db[:stat] = self.stat.members(with_scores: true).to_h
-        @db[:attr] = self.attr.all
-        Redis.new.pusblish "DEBUG.db", "#{@db}"
-        return @db
       end
-    else
-      n = Time.now.utc
-      return { ws: t, ts: t }
+      @db[:ws] = @msg
+      @db[:cmd] = @prompt
+      @db[:input] = t
+      @db[:output] = o;
+      @db[:ts] = Time.now.utc
+      @db[:stat] = self.stat.members(with_scores: true).to_h
+      @db[:attr] = self.attr.all
+      Redis.new.publish(db[:pipe], "#{JSON.generate(@db)}")
+      return @db
     end
   end
   
@@ -529,7 +525,7 @@ function sendForm(th, p) {
     dx.trigger = th;
     dx.form = getForm();
     console.log("send", dx);
-    $.post('/', dx);
+    message(dx);
     resetUI();
 }
 
@@ -619,77 +615,6 @@ $(function() {
 	ev.preventDefault(); 
 	sendForm($(this).attr('id'));
     });
-
-///// END OF NOMADIC
-
-function btsearch() {
-    let filters = [];
-    
-    let filterService = document.querySelector('#service').value;
-    if (filterService.startsWith('0x')) {
-	filterService = parseInt(filterService);
-    }
-    if (filterService) {
-	filters.push({services: [filterService]});
-    }
-    
-    let filterName = document.querySelector('#name').value;
-    if (filterName) {
-	filters.push({name: filterName});
-    }
-    
-    let filterNamePrefix = document.querySelector('#namePrefix').value;
-    if (filterNamePrefix) {
-	filters.push({namePrefix: filterNamePrefix});
-    }
-    
-    let options = {};
-    if (document.querySelector('#allDevices').checked) {
-	options.acceptAllDevices = true;
-    } else {
-	options.filters = filters;
-    }
-    
-    log('Requesting Bluetooth Device...');
-    log('with ' + JSON.stringify(options));
-    navigator.bluetooth.requestDevice(options)
-	.then(device => {
-	    log('> Name:             ' + device.name);
-	    log('> Id:               ' + device.id);
-	    log('> Connected:        ' + device.gatt.connected);
-	})
-	.catch(error => {
-	    log('Argh! ' + error);
-	});
-}
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
 									     </script>										     </body>
 </html>
@@ -751,15 +676,11 @@ function btsearch() {
         @r = Redis.new
         request.websocket do |ws|
           ws.onopen {
-            Process.detach( fork { @r.subscribe(params[:pipe]) { |on| on.message { |ch, m| ws.send(m); } } } )
+            @r.subscribe(params[:pipe]) { |on| on.message { |ch, m| ws.send(m); } }
             settings.sockets << ws
-            ws.send(JSON.generate({ ws: "moving..." }))
+            ws.send(JSON.generate({msg: "keep moving"}));
           }
-          ws.onmessage { |msg|
-            j = JSON.parse(msg);
-            r = @vm[j[:id]].eval(params)
-            @r.publish(j[:pipe], JSON.generate(r))
-          }
+          ws.onmessage { |msg| j = JSON.parse(msg); c = j["pipe"]; Redis.new.publish(c, msg) }
           ws.onclose { @r.unsubscribe(ch); settings.sockets.delete(ws) }
         end
       end
@@ -784,9 +705,7 @@ function btsearch() {
     # handle ajax json post
     post('/') {
       content_type "application/json"
-      h = JSON.generate(@vm[params[:id]].eval(params))
-      Redis.new.publish(params[:pipe], h)
-      return h
+      JSON.generate(@vm[params[:id]].eval(params))
     }
 
     # remember questionable traffic
