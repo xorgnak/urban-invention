@@ -2,18 +2,18 @@ module Nomadic
   def self.methods
     self.instance_methods
   end
-  def run r; lambda { `#{r}` }.call; end
+  def self.run r; lambda { `#{r}` }.call; end
   def self.tool t
     @tools = {
       irc: 'emacs -nw --funcall erc',
       org: 'emacs -nw index.org'
     }
-    if Redis::HashKey("TOOLS").has_key? t.to_s
-      run Redis::HashKey("TOOLS")[t.to_s]
+    if Redis::HashKey.new("TOOLS").has_key? t.to_s
+      self.run Redis::HashKey.new("TOOLS")[t.to_s]
     elsif @tools.has_key? t.to_sym
-      run @tools[t.to_sym]
+      self.run @tools[t.to_sym]
     else
-      run t.to_s
+      self.run t.to_s
     end
   end
   
