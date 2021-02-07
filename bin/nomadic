@@ -18,8 +18,6 @@ require 'nomadic'
 
 require 'optparse'
 
-def run r; lambda { `#{r}` }.call; end
-
 @opts = { }
 OptionParser.new do |o|
   o.banner = "nomadic banner text"
@@ -28,30 +26,17 @@ OptionParser.new do |o|
   o.on("-v", "--[no-]verbose", "Run verbosely") { |v| @opts[:verbose] = v }
 end.parse!
 
-puts "###########"
-puts "# NOMADIC #"
-puts "###########"
-puts "OPTS: #{@opts}"
+#puts "###########"
+#puts "# NOMADIC #"
+#puts "###########"
+#puts "OPTS: #{@opts}"
 
 if @opts[:verbose]
   Process.detach(fork { Redis.new.monitor { |e| puts "#{e}" } })
-end
-
-@tools = {
-  irc: 'emacs -nw --funcall erc',
-  org: 'emacs -nw index.org'
-}
-def tool t
-  if Redis::HashKey("TOOLS").has_key? t.to_s
-    run Redis::HashKey("TOOLS")[t.to_s]
-  elsif @tools.has_key? t.to_sym
-    run @tools[t.to_sym]
-  else
-    run t.to_s
-  end
 end
 
 Nomadic.begin
 @nomad = Nomadic.nomad
 Pry.start
 
+@nomad.tool
