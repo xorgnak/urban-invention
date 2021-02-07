@@ -12,6 +12,7 @@ require 'cinch'
 require 'pry'
 require 'crypt/blowfish'
 require 'crypt/gost'
+require 'ngrok/tunnel'
 
 require 'nomadic'
 
@@ -27,10 +28,6 @@ OptionParser.new do |o|
   
   o.on("-hHUB", "--hub=HUB", "Set hub name") { |n| @opts[:hub] = n }
   o.on("-kKEY", "--key=KEY", "Set hub key") { |n| @opts[:key] = n }
-
-  o.on("-fFUNC", "--function=FUNC", "Set function") { |n| @opts[:function] = n }
-  o.on("-cHOST", "--cluster=HOST", "Set cluster master") { |n| @opts[:cluster] = n }
-  o.on("-sLVL", "--safety=LVL", "Set safety level") { |n| @opts[:safety] = n }
   
   o.on("-eEXEC", "--exec=EXEC", "Set hub key") { |n| @opts[:exec] = n }
   o.on("-rRUN", "--run=RUN", "Set hub key") { |n| @opts[:run] = n }
