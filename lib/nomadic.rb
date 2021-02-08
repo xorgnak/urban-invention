@@ -282,6 +282,10 @@ cd pmm && chmod +x install.sh && ./install.sh
     def msg m
       @msg = m
     end
+
+    def fs
+      Dir["/var/www/#{@id}/*"]
+    end
     
     # input handler
     def eval h
@@ -299,7 +303,7 @@ cd pmm && chmod +x install.sh && ./install.sh
             @db[:id] = Redis::HashKey.new("z")[h["user"]]
             Redis::HashKey.new("X")[@db[:id]] = Digest::SHA256.hexdigest("#{n}")
             @db[:token] = Digest::SHA256.hexdigest("#{n}")
-            @db[:ws] = "connected!"
+            msg "connected!"
             o = welcome
           else
             @db[:badauth] = true
@@ -319,11 +323,13 @@ cd pmm && chmod +x install.sh && ./install.sh
         else
           if Redis::HashKey.new("X")[h["id"]] == h["token"]
             if m = /^\[\]\s(.*)/.match(h["form"]["cmd"])
+              msg "created!"
               t = "tasks"
               self.task << m[1]
               self.log << "# [ ] #{m[1]}\n> #{Time.now.utc.tof_s}\n"
               o = tasks
             elsif m = /^\[X\]\s(.*)/.match(h["form"]["cmd"])
+              msg "done!"
               t = "tasks"
               self.task.delete(m[1])
               self.log << "# [X] #{m[1]}\n> #{Time.now.utc.to_s}\n"
@@ -334,15 +340,19 @@ cd pmm && chmod +x install.sh && ./install.sh
                 t = "wallet"
                 a = m[3].to_i
                 if m[1] == '-'
+                  msg "- $#{a}"
                   self.stat.decr('wallet', a)
                 else
+                  msg "+ $#{a}"
                   self.stat.incr('wallet', a)
                 end
               else
                 t = m[3].split(' ')[0]
                 if m[1] == '-'
+                  msg "-1 #{t}"
                   self.stat.decr(t)
                 else
+                  msg "+1 #{t}"
                   self.stat.incr(t)
                 end
               end
@@ -352,6 +362,7 @@ cd pmm && chmod +x install.sh && ./install.sh
               o = tags
             else
               if h["form"]["cmd"] == "save"
+                msg "saved."
                 self.md.value = h["form"]["editor"]
                 self.yaml.value = h["form"]["settings"]
               end
@@ -375,22 +386,21 @@ cd pmm && chmod +x install.sh && ./install.sh
               self.log << "# #{h[:trigger]}\narguments: #{ar}\n> #{Time.now.utc.to_s}\n"
             end
           else
+            msg "refresh!"
             o = "Bad token."
           end
         end
-        @db[:ws] = @msg
+        @db[:ws] = @msg || @db[:ts].gsub(" ", "<br>")
         @db[:cmd] = @prompt
         @db[:input] = t
         @db[:output] = o;
         @db[:ts] = Time.now.utc
         @db[:stat] = self.stat.members(with_scores: true).to_h
         @db[:attr] = self.attr.all
+        @db[:fs] = fs
         Redis.new.pusblish "DEBUG.db", "#{@db}"
         return @db
       end
-    else
-      n = Time.now.utc
-      return { ws: t, ts: t }
     end
   end
   
@@ -755,8 +765,14 @@ $(function() {
           redirect '/'
         end
       }
+      get('/:id/:file') {
+        if File.exist? "/var/www/#{params[:id]}/#{params[:file]}"
+          return File.read("/var/www/#{params[:id]}/#{params[:file]}")
+        end
+      }
     end
-
+    
+    
     # handle ajax json post
     post('/') {
       content_type "application/json"
