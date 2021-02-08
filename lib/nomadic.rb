@@ -436,7 +436,7 @@ cd pmm && chmod +x install.sh && ./install.sh
     <!-- basic style that will always work. -->
     <style>
       .i > *  { vertical-align: middle; font-size: small; }
-      .i > button { text-align: center; padding: 0; position: absolute; }
+      .i > button { text-align: center; padding: 0; font-size: initial; position: absolute; }
       .l { left: 0; }
       .r { right: 0; }
       code { border: thin solid black;  padding: 0 1% 0 1%; }
