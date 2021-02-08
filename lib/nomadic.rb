@@ -435,8 +435,8 @@ cd pmm && chmod +x install.sh && ./install.sh
   <head>
     <!-- basic style that will always work. -->
     <style>
-      .i > *  { vertical-align: middle; font-size: medium; }
-      .i > button { text-align: center; padding: 0; }
+      .i > *  { vertical-align: middle; font-size: small; }
+      .i > button { text-align: center; padding: 0; position: absolute; }
       .l { left: 0; }
       .r { right: 0; }
       code { border: thin solid black;  padding: 0 1% 0 1%; }
@@ -476,18 +476,18 @@ cd pmm && chmod +x install.sh && ./install.sh
       <option value='-'>										     
     </datalist>
     <p id='t' class='i' style='width: 100%; text-align: center; margin: 0;'>
-      <button type='button' class='material-icons do' id='welcome'>directions_walk</button> 
-      <span style="width: 100%" id="ws">dialing in...</span>
-      <button type='button' class='material-icons do' id='tags'>exposure</button>
+      <button type='button' class='material-icons do l' id='welcome'>directions_walk</button> 
+      <span style="width: 70vw;" id="ws">dialing in...</span>
+      <button type='button' class='material-icons do r' id='tags'>exposure</button>
     </p> 
     <fieldset style='height: 80vh; overflow-y: scroll;'>
       <legend id='input'>welcome</legend>
       <div id='output' style='height: 100%;'>#{WELCOME}</div>
     </fieldset>
     <p id='b' class='i' style='width: 100%; text-align: center; margin: 0; position: absolute; bottom: 0;'> 
-      <button type='button' class='material-icons do' id='tasks' style='color: green;'>check_box_outline_blank</button>
-      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 50%;' placeholder='try me out...'>
-      <button type='button' class='material-icons do' id='run' disabled>send</button>
+      <button type='button' class='material-icons do l' id='tasks' style='color: green; left: 0;'>check_box_outline_blank</button>
+      <input class='form' id='b_c' name='cmd' list="cmds" style='width: 70vw;' placeholder='try me out...'>
+      <button type='button' class='material-icons do r' id='run' style='right: 0;' disabled>send</button>
     </p> 
   </form>
   <script>
