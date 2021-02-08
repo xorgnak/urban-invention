@@ -480,7 +480,7 @@ cd pmm && chmod +x install.sh && ./install.sh
       <span style="width: 70vw;" id="ws">dialing in...</span>
       <button type='button' class='material-icons do r' id='tags'>exposure</button>
     </p> 
-    <fieldset style='height: 80vh; overflow-y: scroll;'>
+    <fieldset style='height: 80vh; overflow-y: scroll; margin: 2% 0 0 0;'>
       <legend id='input'>welcome</legend>
       <div id='output' style='height: 100%;'>#{WELCOME}</div>
     </fieldset>
